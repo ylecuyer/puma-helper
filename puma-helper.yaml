@@ -1,0 +1,10 @@
+applications:
+  "mobile-chat":
+    state : "production"
+    path : "/home/mobile-chat"
+  "ideas":
+    path : "/home/ideas"
+    state : "production"
+nginx:
+  enabled : true
+  path : ""
