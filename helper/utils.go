@@ -12,8 +12,7 @@ func getTotalTimeFromPID(pid int32) (string, error) {
 		return "", err
 	}
 	t, _ := p.Times()
-	fmt.Println(t.Total())
-	return "", nil
+	return fmt.Sprintf("%.2f", t.Total()), nil
 }
 
 func getCPUFromPID(pid int32) (string, error) {
@@ -33,9 +32,9 @@ func getMemoryFromPID(pid int32) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	mem, err := p.MemoryInfo()
+	mem, err := p.MemoryInfoEx()
 	if err != nil {
 		return "", err
 	}
-	return fmt.Sprintf("%d", mem.RSS/(1024*1024)), nil
+	return fmt.Sprintf("%.2f", float64(mem.RSS+mem.Shared)/float64(1024*1024)), nil
 }

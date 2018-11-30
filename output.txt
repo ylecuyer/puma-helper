@@ -1,2 +1,0 @@
-Command stats sent success
-{ "workers": 2, "phase": 80, "booted_workers": 2, "old_workers": 0, "worker_status": [{ "pid": 9631, "index": 1, "phase": 80, "booted": true, "last_checkin": "2018-11-27T17:50:20Z", "last_status": { "backlog":0, "running":1, "pool_capacity":5, "max_threads": 5 } },{ "pid": 9658, "index": 0, "phase": 80, "booted": true, "last_checkin": "2018-11-27T17:50:23Z", "last_status": { "backlog":0, "running":1, "pool_capacity":5, "max_threads": 5 } }] }

@@ -6,8 +6,7 @@ import v "github.com/spf13/viper"
 func InitConfig() error {
 	v.SetConfigName("puma-helper")
 	v.SetConfigType("yaml")
-	//v.AddConfigPath("$HOME")
-	//v.AddConfigPath("/etc/")
+	v.AddConfigPath("$HOME")
 	v.AddConfigPath(".")
 
 	return v.ReadInConfig()

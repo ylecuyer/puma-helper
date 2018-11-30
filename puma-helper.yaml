@@ -5,6 +5,3 @@ applications:
   "ideas":
     path : "/home/ideas"
     state : "production"
-nginx:
-  enabled : true
-  path : ""

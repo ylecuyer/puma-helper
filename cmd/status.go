@@ -13,13 +13,15 @@ func init() {
 // statusCmd represents the status command
 var statusCmd = &cobra.Command{
 	Use:   "status",
-	Short: "Give intranet status access in continue",
+	Short: "status command permit to centralize pumactl status metrics in one place",
 	Long:  "",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if err := viper.Unmarshal(&helper.CfgFile); err != nil {
 			return err
 		}
-		helper.RunStatus()
+		if err := helper.RunStatus(); err != nil {
+			return err
+		}
 
 		return nil
 	},

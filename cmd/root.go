@@ -9,7 +9,6 @@ import (
 )
 
 func init() {
-	// Set logger format
 	formatter := new(log.TextFormatter)
 	formatter.TimestampFormat = time.Stamp
 	formatter.FullTimestamp = true
@@ -20,7 +19,7 @@ func init() {
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
 	Use:   "Puma-Helper",
-	Short: "Puma-Helper CLI",
+	Short: "Puma-Helper CLI aims to implement missing centralized and human readeable features from pumactl in one place.",
 	Long:  "",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		cmd.Help()

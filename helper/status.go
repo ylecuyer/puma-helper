@@ -1,9 +1,9 @@
 package helper
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
-	"log"
 	"os/exec"
 	"time"
 )
@@ -12,10 +12,6 @@ const (
 	appGroupName  string = "/current"
 	pumactlPath   string = appGroupName + "/bin/pumactl"
 	pumastatePath string = appGroupName + "/tmp/pids/puma.state"
-)
-
-var (
-	ps pumaStatus
 )
 
 type pumaStatus struct {
@@ -38,42 +34,77 @@ type pumaStatus struct {
 	Workers int `json:"workers"`
 }
 
-// RunStatus ...
-func RunStatus() {
+// RunStatus run all status logical command
+func RunStatus() error {
 	printGlobalInformations()
-	printApplicationGroups()
+	if err := printApplicationGroups(); err != nil {
+		return err
+	}
+	return nil
 }
 
 func printGlobalInformations() {
 	fmt.Println("---------- Global informations ----------")
 	fmt.Printf("Version: %s\n", Version)
-	fmt.Printf("Date: %s\n", time.Now().Format(time.RFC822Z))
+	fmt.Printf("Date: %s\n", time.Now().Format(time.RFC1123Z))
 	fmt.Println()
-	fmt.Println(getMemoryFromPID(696))
 }
 
-func printApplicationGroups() {
+func printApplicationsContext(pst pumaStatus) error {
+	for _, key := range pst.WorkerStatus {
+		cpu, err := getCPUFromPID(int32(key.Pid))
+		if err != nil {
+			return err
+		}
+
+		mem, err := getMemoryFromPID(int32(key.Pid))
+		if err != nil {
+			return err
+		}
+
+		ttime, err := getTotalTimeFromPID(int32(key.Pid))
+		if err != nil {
+			return err
+		}
+
+		fmt.Printf("* PID: %d\tBooted: %t\t\tRunner index: %d\n", key.Pid, key.Booted, key.Index)
+		fmt.Printf("\t- Last status %s -\n", key.LastCheckin)
+		fmt.Printf("  Running: %d\tPool capacity: %d\tMax threads: %d\n", key.LastStatus.Running, key.LastStatus.PoolCapacity, key.LastStatus.MaxThreads)
+		fmt.Printf("  CPU: %s%%\tMemory: %s MiB\tTotal time: %ss\n", cpu, mem, ttime)
+
+		fmt.Println()
+	}
+
+	return nil
+}
+
+func printApplicationGroups() error {
 	fmt.Println("----------- Application groups -----------")
 
-	for appname, k := range CfgFile.Applications {
-		fmt.Printf("-> %s application (%s)\n", appname, k.State)
-		fmt.Printf("  App root: %s\n\n", k.Path)
-
-		output, err := exec.Command(k.Path+pumactlPath, "-S", k.Path+pumastatePath, "stats").Output()
+	for appname, key := range CfgFile.Applications {
+		//output, err := exec.Command(key.Path+pumactlPath, "-S", key.Path+pumastatePath, "stats").Output()
+		output, err := exec.Command("cat", "/go/src/github.com/dimelo/puma-helper/output.txt").Output()
+		toutput := bytes.TrimLeft(output, "Command stats sent success")
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
-		json.Unmarshal(output, &ps)
 
-		for _, m := range ps.WorkerStatus {
-			fmt.Printf("* PID: %d\tUptime: %s\n", m.Pid, m.LastCheckin)
-			fmt.Printf("  CPU: 0P\tMemory: 231M\n")
-			fmt.Println()
+		var pst pumaStatus
+		if err := json.Unmarshal(toutput, &pst); err != nil {
+			return err
 		}
-		fmt.Println()
-		fmt.Println()
-		fmt.Println()
+
+		fmt.Printf("-> %s application (%s)\n", appname, key.State)
+		fmt.Printf("  App root: %s\n", key.Path)
+		fmt.Printf("  Booted workers: %d\n\n", pst.BootedWorkers)
+
+		if err := printApplicationsContext(pst); err != nil {
+			return err
+		}
+
 		fmt.Println()
 		fmt.Println()
 	}
+
+	return nil
 }
