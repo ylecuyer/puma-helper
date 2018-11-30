@@ -46,11 +46,12 @@ func RunStatus() error {
 func printGlobalInformations() {
 	fmt.Println("---------- Global informations ----------")
 	fmt.Printf("Version: %s\n", Version)
-	fmt.Printf("Date: %s\n", time.Now().Format(time.RFC1123Z))
-	fmt.Println()
+	fmt.Printf("Date: %s\n\n\n", time.Now().Format(time.RFC1123Z))
 }
 
 func printApplicationsContext(pst pumaStatus) error {
+	line := 0
+
 	for _, key := range pst.WorkerStatus {
 		cpu, err := getCPUFromPID(int32(key.Pid))
 		if err != nil {
@@ -72,7 +73,10 @@ func printApplicationsContext(pst pumaStatus) error {
 		fmt.Printf("  Running: %d\tPool capacity: %d\tMax threads: %d\n", key.LastStatus.Running, key.LastStatus.PoolCapacity, key.LastStatus.MaxThreads)
 		fmt.Printf("  CPU: %s%%\tMemory: %s MiB\tTotal time: %ss\n", cpu, mem, ttime)
 
-		fmt.Println()
+		for line < len(CfgFile.Applications) {
+			fmt.Println()
+			line++
+		}
 	}
 
 	return nil
@@ -80,14 +84,17 @@ func printApplicationsContext(pst pumaStatus) error {
 
 func printApplicationGroups() error {
 	fmt.Println("----------- Application groups -----------")
+	fmt.Println()
 
+	line := 0
 	for appname, key := range CfgFile.Applications {
-		//output, err := exec.Command(key.Path+pumactlPath, "-S", key.Path+pumastatePath, "stats").Output()
-		output, err := exec.Command("cat", "/go/src/github.com/dimelo/puma-helper/output.txt").Output()
-		toutput := bytes.TrimLeft(output, "Command stats sent success")
+		output, err := exec.Command(key.Path+pumactlPath, "-S", key.Path+pumastatePath, "stats").Output()
+		//output, err := exec.Command("cat", "/go/src/github.com/dimelo/puma-helper/output.txt").Output()
 		if err != nil {
 			return err
 		}
+
+		toutput := bytes.TrimLeft(output, "Command stats sent success")
 
 		var pst pumaStatus
 		if err := json.Unmarshal(toutput, &pst); err != nil {
@@ -102,8 +109,10 @@ func printApplicationGroups() error {
 			return err
 		}
 
-		fmt.Println()
-		fmt.Println()
+		for line < len(CfgFile.Applications) {
+			fmt.Println()
+			line++
+		}
 	}
 
 	return nil

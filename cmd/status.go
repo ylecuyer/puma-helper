@@ -13,7 +13,7 @@ func init() {
 // statusCmd represents the status command
 var statusCmd = &cobra.Command{
 	Use:   "status",
-	Short: "status command permit to centralize pumactl status metrics in one place",
+	Short: "Command permit to centralize pumactl status metrics in one place",
 	Long:  "",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if err := viper.Unmarshal(&helper.CfgFile); err != nil {
