@@ -50,8 +50,6 @@ func printGlobalInformations() {
 }
 
 func printApplicationsContext(pst pumaStatus) error {
-	line := 0
-
 	for _, key := range pst.WorkerStatus {
 		cpu, err := getCPUFromPID(int32(key.Pid))
 		if err != nil {
@@ -72,11 +70,6 @@ func printApplicationsContext(pst pumaStatus) error {
 		fmt.Printf("\t- Last status %s -\n", key.LastCheckin)
 		fmt.Printf("  Running: %d\tPool capacity: %d\tMax threads: %d\n", key.LastStatus.Running, key.LastStatus.PoolCapacity, key.LastStatus.MaxThreads)
 		fmt.Printf("  CPU: %s%%\tMemory: %s MiB\tTotal time: %ss\n", cpu, mem, ttime)
-
-		for line < len(CfgFile.Applications) {
-			fmt.Println()
-			line++
-		}
 	}
 
 	return nil
