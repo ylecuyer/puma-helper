@@ -8,13 +8,13 @@ import (
 	proc "github.com/shirou/gopsutil/process"
 )
 
-func getTotalTimeFromPID(pid int32) (string, error) {
+func getTotalTimeFromPID(pid int32) (float64, error) {
 	p, err := proc.NewProcess(pid)
 	if err != nil {
-		return "", err
+		return 0.0, err
 	}
 	t, _ := p.Times()
-	return fmt.Sprintf("%.2f", t.Total()), nil
+	return t.Total(), nil
 }
 
 func getCPUFromPID(pid int32) (string, error) {
@@ -44,10 +44,13 @@ func getMemoryFromPID(pid int32) (string, error) {
 func timeElapsed(nT string) string {
 	tx, err := time.Parse(time.RFC3339, nT)
 	if err != nil {
-		return "%nil%"
+		return "unrecognized time format"
 	}
 
-	elapsed := time.Since(tx)
+	elapsed := time.Since(tx).String()
+	if strings.Contains(elapsed, "ms") {
+		return "~0s"
+	}
 
-	return fmt.Sprintf("%ss", strings.Split(elapsed.String(), ".")[0])
+	return fmt.Sprintf("%ss", strings.Split(elapsed, ".")[0])
 }
