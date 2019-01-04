@@ -53,6 +53,13 @@ func printGlobalInformations() {
 
 func printApplicationsContext(pst pumaStatus) error {
 	for _, key := range pst.WorkerStatus {
+		bootbtn := BgGreen(Bold("[UP]"))
+		if !key.Booted {
+			bootbtn = BgRed(Bold("[DOWN]"))
+			fmt.Printf("*  %s ~ PID %d / Worker ID %d\tLast checkin: %s\n", bootbtn, key.Pid, key.Index, timeElapsed(key.LastCheckin))
+			continue
+		}
+
 		cpu, err := getCPUFromPID(int32(key.Pid))
 		if err != nil {
 			return err
@@ -68,12 +75,7 @@ func printApplicationsContext(pst pumaStatus) error {
 			return err
 		}
 
-		bootbtn := BgGreen(Bold("[ON]"))
-		if !key.Booted {
-			bootbtn = BgRed(Bold("[OFF]"))
-		}
-
-		fmt.Printf("*  %s ~ PID %d / Worker ID %d\tActive threads: %d / %d\tLast checkin: %s\n", bootbtn, key.Pid, key.Index, key.LastStatus.Running, key.LastStatus.PoolCapacity, timeElapsed(key.LastCheckin))
+		fmt.Printf("*  %s ~ PID %d / Worker ID %d\tActive threads: [%d / %d]\tLast checkin: %s\n", bootbtn, key.Pid, key.Index, key.LastStatus.Running, key.LastStatus.PoolCapacity, timeElapsed(key.LastCheckin))
 		fmt.Printf("  CPU: %s%%\tMemory: %s MiB\tTotal exec time: %s\n", cpu, mem, timeElapsed(time.Now().Add(time.Duration(-int64(ttime))*time.Second).Format(time.RFC3339)))
 	}
 
