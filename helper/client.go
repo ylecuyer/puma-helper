@@ -1,8 +1,10 @@
 package helper
 
 type Application struct {
-	Path  string `mapstructure:"path"`
-	State string `mapstructure:"state"`
+	Path          string `mapstructure:"path"`
+	State         string `mapstructure:"state"`
+	PumactlPath   string `mapstructure:"pumactlpath"`
+	PumastatePath string `mapstructure:"pumastatepath"`
 }
 
 type Configuration struct {

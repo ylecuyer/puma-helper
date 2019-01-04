@@ -75,30 +75,51 @@ func printApplicationsContext(pst pumaStatus) error {
 	return nil
 }
 
+func readPumaStats(key Application) (pumaStatus, error) {
+	var ps pumaStatus
+
+	pcpath := key.Path + pumactlPath
+	if key.PumactlPath != "" {
+		pcpath = key.PumactlPath
+	}
+
+	pspath := key.Path + pumastatePath
+	if key.PumastatePath != "" {
+		pspath = key.PumastatePath
+	}
+
+	output, err := exec.Command(pcpath, "-S", pspath, "stats").Output()
+	//fmt.Println(pcpath, pspath)
+	//output, err := exec.Command("cat", "/go/src/github.com/dimelo/puma-helper/output.txt").Output()
+	if err != nil {
+		return ps, err
+	}
+
+	toutput := bytes.TrimLeft(output, "Command stats sent success")
+
+	if err := json.Unmarshal(toutput, &ps); err != nil {
+		return ps, err
+	}
+
+	return ps, nil
+}
+
 func printApplicationGroups() error {
 	fmt.Println("----------- Application groups -----------")
 	fmt.Println()
 
 	line := 0
 	for appname, key := range CfgFile.Applications {
-		output, err := exec.Command(key.Path+pumactlPath, "-S", key.Path+pumastatePath, "stats").Output()
-		//output, err := exec.Command("cat", "/go/src/github.com/dimelo/puma-helper/output.txt").Output()
+		ps, err := readPumaStats(key)
 		if err != nil {
-			return err
-		}
-
-		toutput := bytes.TrimLeft(output, "Command stats sent success")
-
-		var pst pumaStatus
-		if err := json.Unmarshal(toutput, &pst); err != nil {
 			return err
 		}
 
 		fmt.Printf("-> %s application (%s)\n", appname, key.State)
 		fmt.Printf("  App root: %s\n", key.Path)
-		fmt.Printf("  Booted workers: %d\n\n", pst.BootedWorkers)
+		fmt.Printf("  Booted workers: %d\n\n", ps.BootedWorkers)
 
-		if err := printApplicationsContext(pst); err != nil {
+		if err := printApplicationsContext(ps); err != nil {
 			return err
 		}
 

@@ -1,7 +1,11 @@
 applications:
   "mobile-chat":
-    state : "production"
     path : "/home/mobile-chat"
+    state : "production"
+    #pumactlpath : "/home/mobile-chat/current/bin/pumactl"
+    #pumastatepath : "/home/mobile-chat/current/tmp/pids/puma_state"
   "ideas":
     path : "/home/ideas"
     state : "production"
+    #pumactlpath : "/home/ideas/current/bin/pumactl"
+    #pumastatepath : "/home/ideas/current/tmp/pids/puma_state"
