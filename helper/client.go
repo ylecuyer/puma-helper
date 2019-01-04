@@ -2,7 +2,7 @@ package helper
 
 type Application struct {
 	Path          string `mapstructure:"path"`
-	State         string `mapstructure:"state"`
+	Description   string `mapstructure:"description"`
 	PumactlPath   string `mapstructure:"pumactlpath"`
 	PumastatePath string `mapstructure:"pumastatepath"`
 }

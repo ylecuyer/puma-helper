@@ -1,11 +1,11 @@
 applications:
   "mobile-chat":
     path : "/home/mobile-chat"
-    state : "production"
+    description : "Related to mobile-chat production system"
     #pumactlpath : "/home/mobile-chat/current/bin/pumactl"
     #pumastatepath : "/home/mobile-chat/current/tmp/pids/puma_state"
   "ideas":
     path : "/home/ideas"
-    state : "production"
+    description : "Related to ideas staging env"
     #pumactlpath : "/home/ideas/current/bin/pumactl"
     #pumastatepath : "/home/ideas/current/tmp/pids/puma_state"

@@ -69,7 +69,7 @@ func printApplicationsContext(pst pumaStatus) error {
 		fmt.Printf("* PID: %d\tBooted: %t\t\tRunner index: %d\n", key.Pid, key.Booted, key.Index)
 		fmt.Printf("\t- Last status %s -\n", timeElapsed(key.LastCheckin))
 		fmt.Printf("  Running: %d\tPool capacity: %d\tMax threads: %d\n", key.LastStatus.Running, key.LastStatus.PoolCapacity, key.LastStatus.MaxThreads)
-		fmt.Printf("  CPU: %s%%\tMemory: %s MiB\tTotal time exec: %s\n", cpu, mem, timeElapsed(time.Now().Add(time.Duration(-int64(ttime))*time.Second).Format(time.RFC3339)))
+		fmt.Printf("  CPU: %s%%\tMemory: %s MiB\tTotal exec time: %s\n", cpu, mem, timeElapsed(time.Now().Add(time.Duration(-int64(ttime))*time.Second).Format(time.RFC3339)))
 	}
 
 	return nil
@@ -106,7 +106,6 @@ func readPumaStats(key Application) (pumaStatus, error) {
 
 func printApplicationGroups() error {
 	fmt.Println("----------- Application groups -----------")
-	fmt.Println()
 
 	line := 0
 	for appname, key := range CfgFile.Applications {
@@ -115,7 +114,10 @@ func printApplicationGroups() error {
 			return err
 		}
 
-		fmt.Printf("-> %s application (%s)\n", appname, key.State)
+		fmt.Printf("-> %s application\n", appname)
+		if key.Description != "" {
+			fmt.Printf("  About: %s\n", key.Description)
+		}
 		fmt.Printf("  App root: %s\n", key.Path)
 		fmt.Printf("  Booted workers: %d\n\n", ps.BootedWorkers)
 
@@ -123,7 +125,7 @@ func printApplicationGroups() error {
 			return err
 		}
 
-		for line < len(CfgFile.Applications) {
+		if line < len(CfgFile.Applications)-1 {
 			fmt.Println()
 			line++
 		}
