@@ -72,6 +72,14 @@
   version = "v1.0.1"
 
 [[projects]]
+  branch = "master"
+  digest = "1:be40f095cd741773905744f16c1f7a21fd9226ccd0529f019deb7da6d667f71c"
+  name = "github.com/logrusorgru/aurora"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "a7b3b318ed4e1ae5b80602b08627267303c68572"
+
+[[projects]]
   digest = "1:c568d7727aa262c32bdf8a3f7db83614f7af0ed661474b24588de635c20024c7"
   name = "github.com/magiconair/properties"
   packages = ["."]
@@ -96,10 +104,9 @@
   version = "v1.2.0"
 
 [[projects]]
-  digest = "1:4bfcd0c8cc9cf71778c3388a69113a3c2fcd0225d35da9fe58e55fde04ec8078"
+  digest = "1:946db283b5540b64c60e7517b5afa54dc148b4672d69b38423a1c8d7fe24f3d1"
   name = "github.com/shirou/gopsutil"
   packages = [
-    ".",
     "cpu",
     "host",
     "internal/common",
@@ -217,8 +224,7 @@
   analyzer-version = 1
   input-imports = [
     "github.com/Sirupsen/logrus",
-    "github.com/shirou/gopsutil",
-    "github.com/shirou/gopsutil/mem",
+    "github.com/logrusorgru/aurora",
     "github.com/shirou/gopsutil/process",
     "github.com/spf13/cobra",
     "github.com/spf13/viper",

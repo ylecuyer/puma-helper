@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"os/exec"
 	"time"
+
+	. "github.com/logrusorgru/aurora"
 )
 
 const (
@@ -66,9 +68,12 @@ func printApplicationsContext(pst pumaStatus) error {
 			return err
 		}
 
-		fmt.Printf("* PID: %d\tBooted: %t\t\tRunner index: %d\n", key.Pid, key.Booted, key.Index)
-		fmt.Printf("\t- Last status %s -\n", timeElapsed(key.LastCheckin))
-		fmt.Printf("  Running: %d\tPool capacity: %d\tMax threads: %d\n", key.LastStatus.Running, key.LastStatus.PoolCapacity, key.LastStatus.MaxThreads)
+		bootbtn := BgGreen(Bold("[ON]"))
+		if !key.Booted {
+			bootbtn = BgRed(Bold("[OFF]"))
+		}
+
+		fmt.Printf("*  %s ~ PID %d / Worker ID %d\tActive threads: %d / %d\tLast checkin: %s\n", bootbtn, key.Pid, key.Index, key.LastStatus.Running, key.LastStatus.PoolCapacity, timeElapsed(key.LastCheckin))
 		fmt.Printf("  CPU: %s%%\tMemory: %s MiB\tTotal exec time: %s\n", cpu, mem, timeElapsed(time.Now().Add(time.Duration(-int64(ttime))*time.Second).Format(time.RFC3339)))
 	}
 

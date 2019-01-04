@@ -26,7 +26,7 @@ func getCPUFromPID(pid int32) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return fmt.Sprintf("%.2f", cpu), nil
+	return fmt.Sprintf("%.1f", cpu), nil
 }
 
 func getMemoryFromPID(pid int32) (string, error) {
@@ -38,7 +38,7 @@ func getMemoryFromPID(pid int32) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return fmt.Sprintf("%.2f", float64(mem.RSS+mem.Shared)/float64(1024*1024)), nil
+	return fmt.Sprintf("%.1f", float64(mem.RSS+mem.Shared)/float64(1024*1024)), nil
 }
 
 func timeElapsed(nT string) string {
