@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os/exec"
+	"strings"
 	"time"
 
 	. "github.com/logrusorgru/aurora"
@@ -116,6 +117,10 @@ func printApplicationGroups() error {
 
 	line := 0
 	for appname, key := range CfgFile.Applications {
+		if Filter != "" && !strings.Contains(appname, Filter) {
+			continue
+		}
+
 		ps, err := readPumaStats(key)
 		if err != nil {
 			return err

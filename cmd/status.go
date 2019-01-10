@@ -8,6 +8,7 @@ import (
 
 func init() {
 	RootCmd.AddCommand(statusCmd)
+	setLocalFlags()
 }
 
 // statusCmd represents the status command
@@ -25,4 +26,8 @@ var statusCmd = &cobra.Command{
 
 		return nil
 	},
+}
+
+func setLocalFlags() {
+	statusCmd.Flags().StringVarP(&helper.Filter, "filter", "f", "", "Show only applications who match")
 }

@@ -13,4 +13,5 @@ type Configuration struct {
 
 var (
 	CfgFile Configuration
+	Filter  string
 )
