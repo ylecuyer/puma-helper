@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	log "github.com/Sirupsen/logrus"
 	. "github.com/logrusorgru/aurora"
 )
 
@@ -98,7 +99,7 @@ func readPumaStats(key Application) (pumaStatus, error) {
 
 	output, err := exec.Command(pcpath, "-S", pspath, "stats").Output()
 	//fmt.Println(pcpath, pspath)
-	//output, err := exec.Command("cat", "/go/src/github.com/dimelo/puma-helper/output.txt").Output()
+	//output, err := exec.Command("cat", "/go/src/github.com/dimelo/puma-helper/main.go").Output()
 	if err != nil {
 		return ps, err
 	}
@@ -123,7 +124,8 @@ func printApplicationGroups() error {
 
 		ps, err := readPumaStats(key)
 		if err != nil {
-			return err
+			log.Warn(fmt.Sprintf("[%s] configuration is invalid. Error: %v\n\n", appname, err))
+			continue
 		}
 
 		fmt.Printf("-> %s application\n", appname)
