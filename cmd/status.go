@@ -17,6 +17,9 @@ var statusCmd = &cobra.Command{
 	Short: "Command permit to centralize pumactl status metrics in one place",
 	Long:  "",
 	RunE: func(cmd *cobra.Command, args []string) error {
+		if viper.ConfigFileUsed() == "" {
+			return nil
+		}
 		if err := viper.Unmarshal(&helper.CfgFile); err != nil {
 			return err
 		}

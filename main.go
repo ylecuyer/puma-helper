@@ -8,7 +8,7 @@ import (
 
 func main() {
 	if err := config.InitConfig(); err != nil {
-		log.Error(err)
+		log.Warn(err)
 	}
 	if err := cmd.RootCmd.Execute(); err != nil {
 		log.Error(err)

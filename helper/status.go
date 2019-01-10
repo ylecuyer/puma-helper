@@ -99,7 +99,7 @@ func readPumaStats(key Application) (pumaStatus, error) {
 
 	output, err := exec.Command(pcpath, "-S", pspath, "stats").Output()
 	//fmt.Println(pcpath, pspath)
-	//output, err := exec.Command("cat", "/go/src/github.com/dimelo/puma-helper/main.go").Output()
+	//output, err := exec.Command("cat", "/go/src/github.com/dimelo/puma-helper/output.txt").Output()
 	if err != nil {
 		return ps, err
 	}
