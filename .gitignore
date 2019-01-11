@@ -14,3 +14,4 @@
 Dockerfile.dev
 output.txt
 puma-helper
+dist/
