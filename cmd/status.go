@@ -32,5 +32,5 @@ var statusCmd = &cobra.Command{
 }
 
 func setLocalFlags() {
-	statusCmd.Flags().StringVarP(&helper.Filter, "filter", "f", "", "Show only applications who match")
+	statusCmd.Flags().StringVarP(&helper.Filter, "filter", "f", "", "Only show applications who match /w given string")
 }

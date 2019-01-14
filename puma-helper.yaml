@@ -1,3 +1,4 @@
+# puma-helper.yaml
 applications:
   "mobile-chat":
     path : "/home/mobile-chat"

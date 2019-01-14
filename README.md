@@ -4,23 +4,52 @@ Puma-helper aims to implement missing centralized and human readeable features f
 
 ## Disclaimer
 
-! Work and read-me still in progress, no packaged release for the moment !
+! Work and documentation still in progress !
 
 ## Installation
 
-Download and install the latest release packaged for your distribution.
+Download and install the latest [release](https://github.com/dimelo/puma-helper/releases) packaged for your distribution.
 
-## Usage
+## Configuration
 
-Refer to disclaimer
+You can find a `puma-helper.yaml` example in this repository.
 
-## FAQ
+The configuration file can be read by the binary from the install directory or `$HOME` path, if defined.
 
-Refer to disclaimer
+Only the `application name` and `path` are mandatory.
+
+```yaml
+# puma-helper.yaml
+applications:
+  "your_app_name":
+    path : "/home/path/to/your/app"
+    description : "Related to my super app, in production"
+    #pumactlpath : "/home/path/to/pumactl"
+    #pumastatepath : "/home/path/to/puma_state"
+```
+
+## CLI usage
+
+### Status
+
+Status command permit to centralize pumactl status metrics
+
+Run the command:
+```
+puma-helper status
+```
+
+#### Options
+
+* `filter`: Only show applications who match with given string
+
+## Report a bug
+
+Directly open an issue and follow given steps
 
 ## Hacking
 
-Refer to disclaimer
+Directly open an PR and follow given steps
 
 ## License
 
