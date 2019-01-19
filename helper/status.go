@@ -58,27 +58,29 @@ func printApplicationsContext(pst pumaStatus) error {
 		bootbtn := BgGreen(Bold("[UP]"))
 		if !key.Booted {
 			bootbtn = BgRed(Bold("[DOWN]"))
-			fmt.Printf("*  %s ~ PID %d / Worker ID %d\tLast checkin: %s\n", bootbtn, key.Pid, key.Index, timeElapsed(key.LastCheckin))
+			fmt.Printf("*  %s ~ PID %d\tWorker ID %d\tLast checkin: %s\n", bootbtn, key.Pid, key.Index, timeElapsed(key.LastCheckin))
 			continue
 		}
 
-		cpu, err := getCPUFromPID(int32(key.Pid))
+		pid := int32(key.Pid)
+
+		cpu, err := getCPUFromPID(pid)
 		if err != nil {
 			return err
 		}
 
-		mem, err := getMemoryFromPID(int32(key.Pid))
+		mem, err := getMemoryFromPID(pid)
 		if err != nil {
 			return err
 		}
 
-		ttime, err := getTotalTimeFromPID(int32(key.Pid))
+		ttime, err := getTotalTimeFromPID(pid)
 		if err != nil {
 			return err
 		}
 
-		fmt.Printf("*  %s ~ PID %d / Worker ID %d\tActive threads: [%d / %d]\tLast checkin: %s\n", bootbtn, key.Pid, key.Index, key.LastStatus.Running, key.LastStatus.PoolCapacity, timeElapsed(key.LastCheckin))
-		fmt.Printf("  CPU: %s%%\tMemory: %s MiB\tTotal exec time: %s\n", cpu, mem, timeElapsed(time.Now().Add(time.Duration(-int64(ttime))*time.Second).Format(time.RFC3339)))
+		fmt.Printf("*  %s ~ PID %d\t\tWorker ID %d\tCPU: %s%%\tMemory: %sMiB\n", bootbtn, key.Pid, key.Index, colorCPU(cpu), colorMemory(mem))
+		fmt.Printf("  Active threads: %s\tLast checkin: %s\tTotal exec time: %s\n", asciiThreadLoad(key.LastStatus.Running, key.LastStatus.PoolCapacity), timeElapsed(key.LastCheckin), timeElapsed(time.Now().Add(time.Duration(-int64(ttime))*time.Second).Format(time.RFC3339)))
 	}
 
 	return nil
@@ -118,6 +120,7 @@ func printApplicationGroups() error {
 
 	line := 0
 	for appname, key := range CfgFile.Applications {
+		currentApp = appname
 		if Filter != "" && !strings.Contains(appname, Filter) {
 			continue
 		}

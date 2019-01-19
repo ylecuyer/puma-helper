@@ -26,6 +26,18 @@ applications:
     description : "Related to my super app, in production"
     #pumactlpath : "/home/path/to/pumactl"
     #pumastatepath : "/home/path/to/puma_state"
+    # Active thread warn and critical % must be > 1 and < 100
+    # Default active thread warn: 50, critical: 80
+    #thread_warn : 50
+    #thread_critical : 80
+    # CPU warn and critical % must be > 1 and < 100
+    # Default CPU warn: 50, critical: 80
+    #cpu_warn : 50
+    #cpu_critical : 80
+    # Memory usage warn and critical must be > 0
+    # Default memory warn: 500, critical: 1000
+    #memory_warn : 500
+    #memory_critical : 1000
 ```
 
 ## CLI usage
