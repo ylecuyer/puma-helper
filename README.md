@@ -21,21 +21,43 @@ Only the `application name` and `path` are mandatory.
 ```yaml
 # puma-helper.yaml
 applications:
+  # Mandatory - string
+  # Your application name
   "your_app_name":
+    # Mandatory - string
+    # Path to your application
     path : "/home/path/to/your/app"
+
+    # Optional - string
+    # Description or informations related to the application
+    # Default description: ""
     description : "Related to my super app, in production"
+
+    # Optional - string
+    # Pumactl and Puma state path to files must be absolute
+    # Default pumactlpath: current/bin/pumactl (from path of your app)
+    # Default pumastatepath: /tmp/pids/puma.state (from path of your app)
     #pumactlpath : "/home/path/to/pumactl"
     #pumastatepath : "/home/path/to/puma_state"
+
+    # Optional - int
     # Active thread warn and critical % must be > 1 and < 100
-    # Default active thread warn: 50, critical: 80
+    # Default Active thread warn: 50
+    # Default Active thread critical: 80
     #thread_warn : 50
     #thread_critical : 80
+
+    # Optional - int
     # CPU warn and critical % must be > 1 and < 100
-    # Default CPU warn: 50, critical: 80
+    # Default CPU warn: 50
+    # Default CPU critical: 80
     #cpu_warn : 50
     #cpu_critical : 80
-    # Memory usage warn and critical must be > 0
-    # Default memory warn: 500, critical: 1000
+
+    # Optional - int
+    # Memory warn and critical usage must be > 0
+    # Default memory warn: 500
+    # Default memory critical: 1000
     #memory_warn : 500
     #memory_critical : 1000
 ```
