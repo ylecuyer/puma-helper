@@ -79,7 +79,7 @@ func printApplicationsContext(pst pumaStatus) error {
 			return err
 		}
 
-		fmt.Printf("*  %s ~ PID %d\t\tWorker ID %d\tCPU: %s%%\tMemory: %sMiB\n", bootbtn, key.Pid, key.Index, colorCPU(cpu), colorMemory(mem))
+		fmt.Printf("*  %s ~ PID %d\t\tWorker ID %d\tCPU: %s%%\tMemory: %s MiB\n", bootbtn, key.Pid, key.Index, colorCPU(cpu), colorMemory(mem))
 		fmt.Printf("  Active threads: %s\tLast checkin: %s\tTotal exec time: %s\n", asciiThreadLoad(key.LastStatus.Running, key.LastStatus.PoolCapacity), timeElapsed(key.LastCheckin), timeElapsed(time.Now().Add(time.Duration(-int64(ttime))*time.Second).Format(time.RFC3339)))
 	}
 
