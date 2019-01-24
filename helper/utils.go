@@ -1,7 +1,10 @@
 package helper
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
+	"os/exec"
 	"strings"
 	"time"
 
@@ -13,6 +16,25 @@ const (
 	bLoad string = "█"
 	wLoad string = "░"
 )
+
+func readPumaStats(pcpath, pspath string) (pumaStatus, error) {
+	var ps pumaStatus
+
+	output, err := exec.Command(pcpath, "-S", pspath, "stats").Output()
+	//fmt.Println(pcpath, pspath)
+	//output, err := exec.Command("cat", "/go/src/github.com/dimelo/puma-helper/output.txt").Output()
+	if err != nil {
+		return ps, err
+	}
+
+	toutput := bytes.TrimLeft(output, "Command stats sent success")
+
+	if err := json.Unmarshal(toutput, &ps); err != nil {
+		return ps, err
+	}
+
+	return ps, nil
+}
 
 func getTotalTimeFromPID(pid int32) (float64, error) {
 	p, err := proc.NewProcess(pid)
