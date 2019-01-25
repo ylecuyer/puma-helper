@@ -12,14 +12,14 @@ Download and install the latest [release](https://github.com/dimelo/puma-helper/
 
 ## Configuration
 
-You can find a `puma-helper.yaml` example in this repository.
+You can find a `.puma-helper.yaml` example in this repository.
 
 The configuration file can be read by the binary from the install directory or `$HOME` path, if defined.
 
 Only the `application name` and `path` are mandatory.
 
 ```yaml
-# puma-helper.yaml
+# .puma-helper.yaml
 applications:
   # Mandatory - string
   # Your application name

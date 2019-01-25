@@ -1,4 +1,4 @@
-# puma-helper.yaml
+# .puma-helper.yaml
 applications:
   # Mandatory - string
   # Your application name
