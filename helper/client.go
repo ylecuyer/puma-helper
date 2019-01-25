@@ -1,6 +1,5 @@
 package helper
 
-// PumaHelperCfg struct contain all options from puma-helper cfg file
 type pumaHelperCfg struct {
 	Applications map[string]struct {
 		Path           string `mapstructure:"path"`

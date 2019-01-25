@@ -38,7 +38,7 @@ var statusCmd = &cobra.Command{
 
 func setLocalFlags() {
 	statusCmd.Flags().StringVarP(&helper.Filter, "filter", "f", "", "Only show applications who match /w given string")
-	statusCmd.Flags().BoolVarP(&helper.JSONOutput, "json", "j", false, "Return Json object who contains all informations")
+	statusCmd.Flags().BoolVarP(&helper.JSONOutput, "json", "j", false, "Return JSON object who contains all informations")
 }
 
 func ensureArgsValidity() error {

@@ -76,6 +76,7 @@ puma-helper status
 #### Options
 
 * `filter`: Only show applications who match with given string
+* `json`: Return JSON object who contains all informations
 
 ## Report a bug
 

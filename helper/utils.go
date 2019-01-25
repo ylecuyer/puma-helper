@@ -17,6 +17,7 @@ const (
 	wLoad string = "░"
 )
 
+// readPumaStats get and unmarshal JSON using pumactl
 func readPumaStats(pcpath, pspath string) (pumaStatus, error) {
 	var ps pumaStatus
 

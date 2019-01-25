@@ -29,6 +29,8 @@ func RunStatus() error {
 	return rsd.printStatusApps()
 }
 
+// retrieveStatusData fetch all data from Puma instances/workers
+// and return it as a struct
 func retrieveStatusData() (*pumaStatusFinalOutput, error) {
 	appCount := 0
 	apps := []pumaStatusApplication{}

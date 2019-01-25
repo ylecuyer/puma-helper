@@ -14,6 +14,7 @@ func printStatusGlobalInformations() {
 	fmt.Printf("Date: %s\n\n\n", time.Now().Format(time.RFC1123Z))
 }
 
+// printStatusApps print apps context one by one
 func (ps pumaStatusFinalOutput) printStatusApps() error {
 	fmt.Println("----------- Application groups -----------")
 
@@ -41,6 +42,7 @@ func (ps pumaStatusFinalOutput) printStatusApps() error {
 	return nil
 }
 
+// printStatusWorkers print workers status context of one app
 func printStatusWorkers(ps []pumaStatusWorker) error {
 	for _, key := range ps {
 		bootbtn := BgGreen(Bold("[UP]"))
@@ -56,6 +58,7 @@ func printStatusWorkers(ps []pumaStatusWorker) error {
 	return nil
 }
 
+// printAndBuildJSON marshal and print pumaStatusFinalOutput
 func (ps pumaStatusFinalOutput) printAndBuildJSON() error {
 	b, err := json.Marshal(ps)
 	if err != nil {
