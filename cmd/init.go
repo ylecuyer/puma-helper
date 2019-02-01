@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -13,6 +15,10 @@ import (
 
 	config "github.com/dimelo/puma-helper/config"
 	helper "github.com/dimelo/puma-helper/helper"
+)
+
+const (
+	globingExpression string = "/home/*/current/tmp/pids/puma*state"
 )
 
 func init() {
@@ -46,6 +52,28 @@ var initCmd = &cobra.Command{
 			if err != nil || ret == "n" {
 				return err
 			}
+		}
+
+		gbool, err := ui.Ask("Would you try to use globing to init configuration? (y/n, required)", &input.Options{
+			Required:  true,
+			HideOrder: true,
+			ValidateFunc: func(s string) error {
+				if s != "y" && s != "n" {
+					return errors.New("Must be y or n")
+				}
+				return nil
+			},
+		})
+		if err != nil {
+			return err
+		}
+
+		if gbool == "y" {
+			files, err := filepath.Glob("/home/*/current/tmp/pids/puma*state")
+			if err != nil {
+				return nil
+			}
+			return buildStructGlobing(files)
 		}
 
 		appname, err := ui.Ask("What's your app name? (string, required)", &input.Options{
@@ -100,6 +128,24 @@ var initCmd = &cobra.Command{
 	},
 }
 
+func buildStructGlobing(files []string) error {
+	cfgdata := make(map[string]helper.PumaHelperCfgData)
+
+	for fid := range files {
+		cutpath := strings.Split(files[fid], "/")
+		cfgdata[cutpath[2]] = helper.PumaHelperCfgData{
+			Path:          "/home/" + cutpath[2],
+			PumactlPath:   "/home/" + cutpath[2] + "/current/bin/pumactl",
+			PumastatePath: files[fid],
+		}
+	}
+
+	return marshalAndWriteConfigFile(
+		helper.PumaHelperCfg{
+			Applications: cfgdata,
+		})
+}
+
 func buildAndWriteConfigFile(appname, apppath, pumactlpath, pumastatepath string) error {
 	cfgdata := make(map[string]helper.PumaHelperCfgData)
 
@@ -109,10 +155,13 @@ func buildAndWriteConfigFile(appname, apppath, pumactlpath, pumastatepath string
 		PumastatePath: pumastatepath,
 	}
 
-	cfg := &helper.PumaHelperCfg{
-		Applications: cfgdata,
-	}
+	return marshalAndWriteConfigFile(
+		helper.PumaHelperCfg{
+			Applications: cfgdata,
+		})
+}
 
+func marshalAndWriteConfigFile(cfg helper.PumaHelperCfg) error {
 	d, err := yaml.Marshal(&cfg)
 	if err != nil {
 		return err
