@@ -85,19 +85,21 @@ func retrieveStatusData() (*pumaStatusFinalOutput, error) {
 				CPUPercent:     cpu,
 				Memory:         mem,
 				TotalTimeExec:  int(ttime),
+				CurrentPhase:   v.Phase,
 			}
 
 			workers = append(workers, worker)
 		}
 
 		app := pumaStatusApplication{
-			Name:          appname,
-			Description:   key.Description,
-			RootPath:      key.Path,
-			PumaStatePath: pspath,
-			PumaCtlPath:   pcpath,
-			BootedWorkers: ps.BootedWorkers,
-			Worker:        workers,
+			Name:            appname,
+			Description:     key.Description,
+			RootPath:        key.Path,
+			PumaStatePath:   pspath,
+			PumaCtlPath:     pcpath,
+			BootedWorkers:   ps.BootedWorkers,
+			Worker:          workers,
+			AppCurrentPhase: ps.Phase,
 		}
 
 		apps = append(apps, app)

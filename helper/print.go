@@ -27,9 +27,10 @@ func (ps pumaStatusFinalOutput) printStatusApps() error {
 			fmt.Printf("  About: %s\n", key.Description)
 		}
 		fmt.Printf("  App root: %s\n", key.RootPath)
-		fmt.Printf("  Booted workers: %d\n\n", key.BootedWorkers)
+		fmt.Printf("  Booted workers: %d\n", key.BootedWorkers)
+		fmt.Printf("  Current phase: %d | Old workers: %d\n\n", key.AppCurrentPhase, key.OldWorkers)
 
-		if err := printStatusWorkers(key.Worker); err != nil {
+		if err := printStatusWorkers(key.Worker, key.AppCurrentPhase); err != nil {
 			return err
 		}
 
@@ -43,8 +44,13 @@ func (ps pumaStatusFinalOutput) printStatusApps() error {
 }
 
 // printStatusWorkers print workers status context of one app
-func printStatusWorkers(ps []pumaStatusWorker) error {
+func printStatusWorkers(ps []pumaStatusWorker, currentPhase int) error {
 	for _, key := range ps {
+		phase := Green(fmt.Sprintf("%d", key.CurrentPhase))
+		if key.CurrentPhase != currentPhase {
+			phase = Red(fmt.Sprintf("%d != %d app", key.CurrentPhase, currentPhase))
+		}
+
 		bootbtn := BgGreen(Bold("[UP]"))
 		if !key.IsBooted {
 			bootbtn = BgRed(Bold("[DOWN]"))
@@ -52,7 +58,7 @@ func printStatusWorkers(ps []pumaStatusWorker) error {
 			continue
 		}
 
-		fmt.Printf("*  %s ~ PID %d\t\tWorker ID %d\tCPU: %s%%\tMemory: %s MiB\n", bootbtn, key.Pid, key.ID, colorCPU(key.CPUPercent), colorMemory(key.Memory))
+		fmt.Printf("*  %s ~ PID %d\t\tWorker ID %d\tCPU: %s%%\tMem: %s MiB\tPhase: %s\n", bootbtn, key.Pid, key.ID, colorCPU(key.CPUPercent), colorMemory(key.Memory), phase)
 		fmt.Printf("  Active threads: %s\tLast checkin: %s\tTotal exec time: %s\n", asciiThreadLoad(key.CurrentThreads, key.MaxThreads), timeElapsed(key.LastCheckin), timeElapsed(time.Now().Add(time.Duration(-int64(key.TotalTimeExec))*time.Second).Format(time.RFC3339)))
 	}
 	return nil

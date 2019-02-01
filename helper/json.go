@@ -26,13 +26,15 @@ type pumaStatusFinalOutput struct {
 }
 
 type pumaStatusApplication struct {
-	Name          string             `json:"name"`
-	Description   string             `json:"description"`
-	RootPath      string             `json:"root_path"`
-	PumaStatePath string             `json:"puma_state_path"`
-	PumaCtlPath   string             `json:"pumactl_path"`
-	BootedWorkers int                `json:"booted_workers"`
-	Worker        []pumaStatusWorker `json:"worker"`
+	Name            string             `json:"name"`
+	Description     string             `json:"description"`
+	RootPath        string             `json:"root_path"`
+	PumaStatePath   string             `json:"puma_state_path"`
+	PumaCtlPath     string             `json:"pumactl_path"`
+	BootedWorkers   int                `json:"booted_workers"`
+	AppCurrentPhase int                `json:"app_current_phase"`
+	OldWorkers      int                `json:"old_workers"`
+	Worker          []pumaStatusWorker `json:"worker"`
 }
 
 type pumaStatusWorker struct {
@@ -45,4 +47,5 @@ type pumaStatusWorker struct {
 	CPUPercent     float64 `json:"cpu_percent"`
 	Memory         float64 `json:"memory"`
 	TotalTimeExec  int     `json:"total_time_exec"`
+	CurrentPhase   int     `json:"current_phase"`
 }
