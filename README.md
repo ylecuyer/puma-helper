@@ -12,7 +12,7 @@ Download and install the latest [release](https://github.com/dimelo/puma-helper/
 
 ## Configuration
 
-You can find a `.puma-helper.yaml` example in this repository.
+You can find a `.puma-helper.yaml` example in this repository or use `init` command directly.
 
 The configuration file can be read by the binary from the install directory or `$HOME` path, if defined.
 
@@ -66,11 +66,11 @@ applications:
 
 ### Init
 
-Init command permit to init configuration file if it doesn't exist (or replace it).
+Init command permit to create configuration file if it doesn't exist (or replace it).
 
-Simply follow the questions and enter only absolute path.
+Simply follow the questions and enter absolute path only.
 
-At the end the configuration file where placed under `$HOME//puma-helper.yaml`
+At the end, the configuration file will be placed under `$HOME//puma-helper.yaml`.
 
 Run the command:
 ```

@@ -38,7 +38,7 @@ var initCmd = &cobra.Command{
 					HideOrder: true,
 					ValidateFunc: func(s string) error {
 						if s != "y" && s != "n" {
-							return errors.New("Must be Y or n")
+							return errors.New("Must be y or n")
 						}
 						return nil
 					},
