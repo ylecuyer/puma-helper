@@ -40,3 +40,11 @@
 [[constraint]]
   branch = "master"
   name = "github.com/logrusorgru/aurora"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/tcnksm/go-input"
+
+[[constraint]]
+  name = "gopkg.in/yaml.v2"
+  version = "2.2.1"

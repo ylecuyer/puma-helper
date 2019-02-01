@@ -64,9 +64,22 @@ applications:
 
 ## CLI usage
 
+### Init
+
+Init command permit to init configuration file if it doesn't exist (or replace it).
+
+Simply follow the questions and enter only absolute path.
+
+At the end the configuration file where placed under `$HOME//puma-helper.yaml`
+
+Run the command:
+```
+puma-helper init
+```
+
 ### Status
 
-Status command permit to centralize pumactl status metrics
+Status command permit to centralize pumactl status metrics.
 
 Run the command:
 ```
@@ -80,11 +93,11 @@ puma-helper status
 
 ## Report a bug
 
-Directly open an issue and follow given steps
+Directly open an issue and follow given steps.
 
 ## Hacking
 
-Directly open an PR and follow given steps
+Directly open an PR and follow given steps.
 
 ## License
 
