@@ -22,13 +22,21 @@ func (ps pumaStatusFinalOutput) printStatusApps() error {
 	for _, key := range ps.Application {
 		currentApp = key.Name
 
-		fmt.Printf("-> %s application\n", key.Name)
-		if key.Description != "" {
-			fmt.Printf("  About: %s\n", key.Description)
+		if ExpandDetails {
+			fmt.Printf("-> %s application\n", key.Name)
+			if key.Description != "" {
+				fmt.Printf("  About: %s\n", key.Description)
+			}
+			fmt.Printf("  App root: %s\n", key.RootPath)
+			fmt.Printf("  Booted workers: %d\n", key.BootedWorkers)
+			fmt.Printf("  Current phase: %d | Old workers: %d\n\n", key.AppCurrentPhase, key.OldWorkers)
+		} else {
+			if key.OldWorkers > 0 {
+				fmt.Printf("-> %s (%s) Phase: %d | Workers: %d (Old: %d)\n\n", key.Name, key.RootPath, key.AppCurrentPhase, key.BootedWorkers, key.OldWorkers)
+			} else {
+				fmt.Printf("-> %s (%s) Phase: %d | Workers: %d\n\n", key.Name, key.RootPath, key.AppCurrentPhase, key.BootedWorkers)
+			}
 		}
-		fmt.Printf("  App root: %s\n", key.RootPath)
-		fmt.Printf("  Booted workers: %d\n", key.BootedWorkers)
-		fmt.Printf("  Current phase: %d | Old workers: %d\n\n", key.AppCurrentPhase, key.OldWorkers)
 
 		if err := printStatusWorkers(key.Worker, key.AppCurrentPhase); err != nil {
 			return err
@@ -49,6 +57,16 @@ func printStatusWorkers(ps []pumaStatusWorker, currentPhase int) error {
 		phase := Green(fmt.Sprintf("%d", key.CurrentPhase))
 		if key.CurrentPhase != currentPhase {
 			phase = Red(fmt.Sprintf("%d != %d app", key.CurrentPhase, currentPhase))
+		}
+
+		if !ExpandDetails {
+			lcheckin := Green(timeElapsed(key.LastCheckin))
+			if len(timeElapsed(key.LastCheckin)) >= 3 {
+				lcheckin = Brown(timeElapsed(key.LastCheckin))
+			}
+
+			fmt.Printf("* %d [%d] CPU: %s Mem: %s Phase: %s Runtime: %s Threads: %s (Last checkin: %s)\n", key.ID, key.Pid, colorCPU(key.CPUPercent), colorMemory(key.Memory), phase, timeElapsed(time.Now().Add(time.Duration(-int64(key.TotalTimeExec))*time.Second).Format(time.RFC3339)), asciiThreadLoad(key.CurrentThreads, key.MaxThreads), lcheckin)
+			continue
 		}
 
 		bootbtn := BgGreen(Bold("[UP]"))

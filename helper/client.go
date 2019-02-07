@@ -26,6 +26,8 @@ var (
 	Filter string
 	// JSONOutput CLI status command option
 	JSONOutput bool
+	// ExpandDetails CLI status command option
+	ExpandDetails bool
 
 	currentApp string
 )
