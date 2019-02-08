@@ -1,15 +1,18 @@
 package helper
 
 import (
-	"bytes"
+	"bufio"
 	"encoding/json"
 	"fmt"
-	"os/exec"
+	"io/ioutil"
+	"net"
+	"net/http"
 	"strings"
 	"time"
 
 	. "github.com/logrusorgru/aurora"
 	proc "github.com/shirou/gopsutil/process"
+	yaml "gopkg.in/yaml.v2"
 )
 
 const (
@@ -17,24 +20,55 @@ const (
 	wLoad string = "░"
 )
 
-// readPumaStats get and unmarshal JSON using pumactl
-func readPumaStats(pcpath, pspath string) (pumaStatus, error) {
-	var ps pumaStatus
+type pumaStateFile struct {
+	Pid              int    `yaml:"pid"`
+	ControlURL       string `yaml:"control_url"`
+	ControlAuthToken string `yaml:"control_auth_token"`
+}
 
-	output, err := exec.Command(pcpath, "-S", pspath, "stats").Output()
+// readPumaStats get and unmarshal JSON using puma unix socket
+func readPumaStats(pspath string) (*pumaStatus, error) {
+	var ps pumaStatus
+	var psf pumaStateFile
+
+	data, err := ioutil.ReadFile(pspath)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := yaml.Unmarshal(data, &psf); err != nil {
+		return nil, err
+	}
+
+	c, err := net.Dial("unix", strings.TrimPrefix(psf.ControlURL, "unix://"))
+	if err != nil {
+		return nil, err
+	}
+	defer c.Close()
+
+	_, err = c.Write([]byte(fmt.Sprintf("GET /stats?token=%s HTTP/1.0\r\n\r\n", psf.ControlAuthToken)))
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := http.ReadResponse(bufio.NewReader(c), &http.Request{Method: "GET"})
+	if err != nil {
+		return nil, err
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
 	//fmt.Println(pcpath, pspath)
 	//output, err := exec.Command("cat", "/go/src/github.com/dimelo/puma-helper/output.txt").Output()
-	if err != nil {
-		return ps, err
+
+	if err := json.Unmarshal(body, &ps); err != nil {
+		return nil, err
 	}
 
-	toutput := bytes.TrimLeft(output, "Command stats sent success")
-
-	if err := json.Unmarshal(toutput, &ps); err != nil {
-		return ps, err
-	}
-
-	return ps, nil
+	return &ps, nil
 }
 
 func getTotalExecTimeFromPID(pid int32) (float64, error) {

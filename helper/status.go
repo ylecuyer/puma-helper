@@ -50,7 +50,7 @@ func retrieveStatusData() (*pumaStatusFinalOutput, error) {
 			pspath = key.PumastatePath
 		}
 
-		ps, err := readPumaStats(pcpath, pspath)
+		ps, err := readPumaStats(pspath)
 		if err != nil {
 			log.Warn(fmt.Sprintf("[%s] configuration is invalid. Error: %v\n\n", appname, err))
 			continue
