@@ -10,8 +10,12 @@ import (
 
 func printStatusGlobalInformations() {
 	fmt.Println("---------- Global informations ----------")
-	fmt.Printf("Version: %s\n", Version)
-	fmt.Printf("Date: %s\n\n\n", time.Now().Format(time.RFC1123Z))
+	if ExpandDetails {
+		fmt.Printf("Version: %s\n", Version)
+		fmt.Printf("Date: %s\n\n\n", time.Now().Format(time.RFC1123Z))
+		return
+	}
+	fmt.Printf("Version: %s | Date: %s\n\n", Version, time.Now().Format(time.RFC1123Z))
 }
 
 // printStatusApps print apps context one by one
