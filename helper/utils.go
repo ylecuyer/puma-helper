@@ -27,13 +27,12 @@ type pumaStateFile struct {
 
 // readPumaStats get and unmarshal JSON using puma unix socket
 func readPumaStats(pspath string) (*pumaStatus, error) {
-	var ps pumaStatus
-	var psf pumaStateFile
-
 	data, err := ioutil.ReadFile(pspath)
 	if err != nil {
 		return nil, err
 	}
+
+	var psf pumaStateFile
 
 	if err := yaml.Unmarshal(data, &psf); err != nil {
 		return nil, err
@@ -59,6 +58,10 @@ func readPumaStats(pspath string) (*pumaStatus, error) {
 
 	//fmt.Println(pcpath, pspath)
 	//output, err := exec.Command("cat", "/go/src/github.com/dimelo/puma-helper/output.txt").Output()
+
+	ps := pumaStatus{
+		MainPid: psf.Pid,
+	}
 
 	if err := json.Unmarshal(body, &ps); err != nil {
 		return nil, err

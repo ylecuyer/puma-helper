@@ -107,6 +107,7 @@ func retrieveStatusData() (*pumaStatusFinalOutput, error) {
 			AppCurrentPhase:     ps.Phase,
 			TotalCurrentThreads: tcthreads,
 			TotalMaxThreads:     tmthreads,
+			MainPid:             ps.MainPid,
 		}
 
 		apps = append(apps, app)

@@ -4,6 +4,7 @@ type pumaStatus struct {
 	BootedWorkers int `json:"booted_workers"`
 	OldWorkers    int `json:"old_workers"`
 	Phase         int `json:"phase"`
+	MainPid       int `json:"main_pid"`
 	WorkerStatus  []struct {
 		Booted      bool   `json:"booted"`
 		Index       int    `json:"index"`
@@ -36,6 +37,7 @@ type pumaStatusApplication struct {
 	Worker              []pumaStatusWorker `json:"worker"`
 	TotalMaxThreads     int                `json:"total_max_threads"`
 	TotalCurrentThreads int                `json:"total_current_threads"`
+	MainPid             int                `json:"main_pid"`
 }
 
 type pumaStatusWorker struct {
