@@ -56,6 +56,8 @@ func retrieveStatusData() (*pumaStatusFinalOutput, error) {
 			continue
 		}
 
+		tmthreads := 0
+		tcthreads := 0
 		workers := []pumaStatusWorker{}
 		for _, v := range ps.WorkerStatus {
 			pid := int32(v.Pid)
@@ -95,18 +97,23 @@ func retrieveStatusData() (*pumaStatusFinalOutput, error) {
 				Uptime:         utime / 1000,
 			}
 
+			tcthreads += (v.LastStatus.MaxThreads - v.LastStatus.PoolCapacity)
+			tmthreads += v.LastStatus.MaxThreads
+
 			workers = append(workers, worker)
 		}
 
 		app := pumaStatusApplication{
-			Name:            appname,
-			Description:     key.Description,
-			RootPath:        key.Path,
-			PumaStatePath:   pspath,
-			PumaCtlPath:     pcpath,
-			BootedWorkers:   ps.BootedWorkers,
-			Worker:          workers,
-			AppCurrentPhase: ps.Phase,
+			Name:                appname,
+			Description:         key.Description,
+			RootPath:            key.Path,
+			PumaStatePath:       pspath,
+			PumaCtlPath:         pcpath,
+			BootedWorkers:       ps.BootedWorkers,
+			Worker:              workers,
+			AppCurrentPhase:     ps.Phase,
+			TotalCurrentThreads: tcthreads,
+			TotalMaxThreads:     tmthreads,
 		}
 
 		apps = append(apps, app)

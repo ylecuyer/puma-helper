@@ -33,12 +33,12 @@ func (ps pumaStatusFinalOutput) printStatusApps() error {
 			}
 			fmt.Printf("  App root: %s\n", key.RootPath)
 			fmt.Printf("  Booted workers: %d\n", key.BootedWorkers)
-			fmt.Printf("  Current phase: %d | Old workers: %d\n\n", key.AppCurrentPhase, key.OldWorkers)
+			fmt.Printf("  Current phase: %d | Old workers: %d | Active threads: %s\n\n", key.AppCurrentPhase, key.OldWorkers, asciiThreadLoad(key.TotalCurrentThreads, key.TotalMaxThreads))
 		} else {
 			if key.OldWorkers > 0 {
-				fmt.Printf("-> %s (%s) Phase: %d | Workers: %d (Old: %d)\n\n", key.Name, key.RootPath, key.AppCurrentPhase, key.BootedWorkers, key.OldWorkers)
+				fmt.Printf("-> %s (%s) Phase: %d | Workers: %d (Old: %d) | Active threads: %s\\n\n", key.Name, key.RootPath, key.AppCurrentPhase, key.BootedWorkers, key.OldWorkers, asciiThreadLoad(key.TotalCurrentThreads, key.TotalMaxThreads))
 			} else {
-				fmt.Printf("-> %s (%s) Phase: %d | Workers: %d\n\n", key.Name, key.RootPath, key.AppCurrentPhase, key.BootedWorkers)
+				fmt.Printf("-> %s (%s) Phase: %d | Workers: %d | Active threads: %s\\n\n", key.Name, key.RootPath, key.AppCurrentPhase, key.BootedWorkers, asciiThreadLoad(key.TotalCurrentThreads, key.TotalMaxThreads))
 			}
 		}
 
@@ -86,7 +86,7 @@ func printStatusWorkers(ps []pumaStatusWorker, currentPhase int) error {
 	return nil
 }
 
-// printAndBuildJSON marshal and print pumaStatusFinalOutput
+// printAndBuildJSON marshal and print pumaStatusFinalOutput struct
 func (ps pumaStatusFinalOutput) printAndBuildJSON() error {
 	b, err := json.Marshal(ps)
 	if err != nil {
