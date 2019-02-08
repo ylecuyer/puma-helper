@@ -36,9 +36,9 @@ func (ps pumaStatusFinalOutput) printStatusApps() error {
 			fmt.Printf("  Current phase: %d | Old workers: %d | Active threads: %s\n\n", key.AppCurrentPhase, key.OldWorkers, asciiThreadLoad(key.TotalCurrentThreads, key.TotalMaxThreads))
 		} else {
 			if key.OldWorkers > 0 {
-				fmt.Printf("-> %s (%s) Phase: %d | Workers: %d (Old: %d) | Active threads: %s\\n\n", key.Name, key.RootPath, key.AppCurrentPhase, key.BootedWorkers, key.OldWorkers, asciiThreadLoad(key.TotalCurrentThreads, key.TotalMaxThreads))
+				fmt.Printf("-> %s (%s) Phase: %d | Workers: %d (Old: %d) | Active threads: %s\n\n", key.Name, key.RootPath, key.AppCurrentPhase, key.BootedWorkers, key.OldWorkers, asciiThreadLoad(key.TotalCurrentThreads, key.TotalMaxThreads))
 			} else {
-				fmt.Printf("-> %s (%s) Phase: %d | Workers: %d | Active threads: %s\\n\n", key.Name, key.RootPath, key.AppCurrentPhase, key.BootedWorkers, asciiThreadLoad(key.TotalCurrentThreads, key.TotalMaxThreads))
+				fmt.Printf("-> %s (%s) Phase: %d | Workers: %d | Active threads: %s\n\n", key.Name, key.RootPath, key.AppCurrentPhase, key.BootedWorkers, asciiThreadLoad(key.TotalCurrentThreads, key.TotalMaxThreads))
 			}
 		}
 
@@ -69,7 +69,7 @@ func printStatusWorkers(ps []pumaStatusWorker, currentPhase int) error {
 				lcheckin = Brown(timeElapsed(key.LastCheckin))
 			}
 
-			fmt.Printf("* %d [%d] CPU: %s Mem: %s Phase: %s Uptime: %s Threads: %s (Last checkin: %s)\n", key.ID, key.Pid, colorCPU(key.CPUPercent), colorMemory(key.Memory), phase, timeElapsed(timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339))), asciiThreadLoad(key.CurrentThreads, key.MaxThreads), lcheckin)
+			fmt.Printf("* %d [%d] CPU: %s Mem: %s Phase: %s Uptime: %s Threads: %s (Last checkin: %s)\n", key.ID, key.Pid, colorCPU(key.CPUPercent), colorMemory(key.Memory), phase, timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)), asciiThreadLoad(key.CurrentThreads, key.MaxThreads), lcheckin)
 			continue
 		}
 
