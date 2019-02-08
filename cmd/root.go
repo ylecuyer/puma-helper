@@ -19,7 +19,7 @@ func init() {
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
 	Use:   "Puma-Helper",
-	Short: "Puma-Helper CLI aims to implement missing centralized and human readeable features from pumactl in one place.",
+	Short: "Puma-Helper CLI aims to implement missing centralized and human readeable features from puma unix socket in one place.",
 	Long:  "",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		cmd.Help()

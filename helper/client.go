@@ -9,7 +9,6 @@ type PumaHelperCfg struct {
 type PumaHelperCfgData struct {
 	Path           string `mapstructure:"path"`
 	Description    string `mapstructure:"description"`
-	PumactlPath    string `mapstructure:"pumactlpath"`
 	PumastatePath  string `mapstructure:"pumastatepath"`
 	ThreadWarn     int    `mapstructure:"thread_warn"`
 	ThreadCritical int    `mapstructure:"thread_critical"`

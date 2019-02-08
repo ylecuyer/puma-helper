@@ -30,7 +30,6 @@ type pumaStatusApplication struct {
 	Description         string             `json:"description"`
 	RootPath            string             `json:"root_path"`
 	PumaStatePath       string             `json:"puma_state_path"`
-	PumaCtlPath         string             `json:"pumactl_path"`
 	BootedWorkers       int                `json:"booted_workers"`
 	AppCurrentPhase     int                `json:"app_current_phase"`
 	OldWorkers          int                `json:"old_workers"`

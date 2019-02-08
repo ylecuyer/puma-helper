@@ -1,6 +1,6 @@
 # puma-helper
 
-Puma-helper aims to implement missing centralized and human readeable features from pumactl in one place.
+Puma-helper aims to implement missing centralized and human readeable features from puma unix socket in one place.
 
 ## Disclaimer
 
@@ -33,13 +33,6 @@ applications:
     # Default description: ""
     description : "Related to my super app, in production"
 
-    # Optional - string
-    # Pumactl and Puma state path to files must be absolute
-    # Default pumactlpath: current/bin/pumactl (from path of your app)
-    # Default pumastatepath: /tmp/pids/puma.state (from path of your app)
-    #pumactlpath : "/home/path/to/pumactl"
-    #pumastatepath : "/home/path/to/puma_state"
-
     # Optional - int
     # Active thread warn and critical % must be > 1 and < 100
     # Default Active thread warn: 50
@@ -70,7 +63,7 @@ Init command permit to create configuration file if it doesn't exist (or replace
 
 Simply follow the questions and enter absolute path only.
 
-At the end, the configuration file will be placed under `$HOME//puma-helper.yaml`.
+At the end, the configuration file will be placed under `$HOME/.puma-helper.yaml`.
 
 Run the command:
 ```
@@ -79,7 +72,7 @@ puma-helper init
 
 ### Status
 
-Status command permit to centralize pumactl status metrics.
+Status command permit to centralize puma unix socket status metrics.
 
 Run the command:
 ```

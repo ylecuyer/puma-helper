@@ -16,7 +16,7 @@ func init() {
 // statusCmd represents the status command
 var statusCmd = &cobra.Command{
 	Use:   "status",
-	Short: "Command permit to centralize pumactl status metrics in one place",
+	Short: "Command permit to centralize puma unix socket status metrics in one place",
 	Long:  "",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if viper.ConfigFileUsed() == "" {

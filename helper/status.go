@@ -9,7 +9,6 @@ import (
 
 const (
 	appGroupName  string = "/current"
-	pumactlPath   string = appGroupName + "/bin/pumactl"
 	pumastatePath string = appGroupName + "/tmp/pids/puma.state"
 )
 
@@ -38,11 +37,6 @@ func retrieveStatusData() (*pumaStatusFinalOutput, error) {
 	for appname, key := range CfgFile.Applications {
 		if Filter != "" && !strings.Contains(appname, Filter) {
 			continue
-		}
-
-		pcpath := key.Path + pumactlPath
-		if key.PumactlPath != "" {
-			pcpath = key.PumactlPath
 		}
 
 		pspath := key.Path + pumastatePath
@@ -108,7 +102,6 @@ func retrieveStatusData() (*pumaStatusFinalOutput, error) {
 			Description:         key.Description,
 			RootPath:            key.Path,
 			PumaStatePath:       pspath,
-			PumaCtlPath:         pcpath,
 			BootedWorkers:       ps.BootedWorkers,
 			Worker:              workers,
 			AppCurrentPhase:     ps.Phase,

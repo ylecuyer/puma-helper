@@ -104,7 +104,7 @@ var initCmd = &cobra.Command{
 			return err
 		}
 
-		pumactlpath, err := ui.Ask("What's absolute path to your pumactl? (string, optionnal)", &input.Options{
+		pumastatepath, err := ui.Ask("What's absolute path to your puma state file? (string, optionnal)", &input.Options{
 			Required:  false,
 			HideOrder: true,
 		})
@@ -112,15 +112,7 @@ var initCmd = &cobra.Command{
 			return err
 		}
 
-		pumastatepath, err := ui.Ask("What's absolute path to your pumastate? (string, optionnal)", &input.Options{
-			Required:  false,
-			HideOrder: true,
-		})
-		if err != nil {
-			return err
-		}
-
-		if err := buildAndWriteConfigFile(appname, apppath, pumactlpath, pumastatepath); err != nil {
+		if err := buildAndWriteConfigFile(appname, apppath, pumastatepath); err != nil {
 			return err
 		}
 
@@ -135,7 +127,6 @@ func buildStructGlobing(files []string) error {
 		cutpath := strings.Split(files[fid], "/")
 		cfgdata[cutpath[2]] = helper.PumaHelperCfgData{
 			Path:          "/home/" + cutpath[2],
-			PumactlPath:   "/home/" + cutpath[2] + "/current/bin/pumactl",
 			PumastatePath: files[fid],
 		}
 	}
@@ -146,12 +137,11 @@ func buildStructGlobing(files []string) error {
 		})
 }
 
-func buildAndWriteConfigFile(appname, apppath, pumactlpath, pumastatepath string) error {
+func buildAndWriteConfigFile(appname, apppath, pumastatepath string) error {
 	cfgdata := make(map[string]helper.PumaHelperCfgData)
 
 	cfgdata[appname] = helper.PumaHelperCfgData{
 		Path:          apppath,
-		PumactlPath:   pumactlpath,
 		PumastatePath: pumastatepath,
 	}
 

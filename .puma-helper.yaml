@@ -12,13 +12,6 @@ applications:
     # Default description: ""
     description : "Related to mobile-chat production system"
 
-    # Optional - string
-    # Pumactl and Puma state path to files must be absolute
-    # Default pumactlpath: current/bin/pumactl (from path of your app)
-    # Default pumastatepath: /tmp/pids/puma.state (from path of your app)
-    #pumactlpath : "/home/path/to/pumactl"
-    #pumastatepath : "/home/path/to/puma_state"
-
     # Optional - int
     # Active thread warn and critical % must be > 1 and < 100
     # Default Active thread warn: 50
@@ -42,7 +35,6 @@ applications:
   "ideas":
     path : "/home/ideas"
     description : "Related to ideas staging env"
-    #pumactlpath : "/home/ideas/current/bin/pumactl"
     #pumastatepath : "/home/ideas/current/tmp/pids/puma_state"
     #thread_warn : 50
     #thread_critical : 80
