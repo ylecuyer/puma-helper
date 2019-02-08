@@ -37,13 +37,25 @@ func readPumaStats(pcpath, pspath string) (pumaStatus, error) {
 	return ps, nil
 }
 
-func getTotalTimeFromPID(pid int32) (float64, error) {
+func getTotalExecTimeFromPID(pid int32) (float64, error) {
 	p, err := proc.NewProcess(pid)
 	if err != nil {
 		return 0.0, err
 	}
 	t, _ := p.Times()
 	return t.Total(), nil
+}
+
+func getTotalUptimeFromPID(pid int32) (int64, error) {
+	p, err := proc.NewProcess(pid)
+	if err != nil {
+		return 0, err
+	}
+	t, err := p.CreateTime()
+	if err != nil {
+		return 0, err
+	}
+	return t, nil
 }
 
 func getCPUFromPID(pid int32) (float64, error) {

@@ -70,7 +70,13 @@ func retrieveStatusData() (*pumaStatusFinalOutput, error) {
 				return nil, err
 			}
 
-			ttime, err := getTotalTimeFromPID(pid)
+			ttime, err := getTotalExecTimeFromPID(pid)
+			if err != nil {
+				return nil, err
+			}
+
+			// Assuming this timestamp is in milliseconds
+			utime, err := getTotalUptimeFromPID(pid)
 			if err != nil {
 				return nil, err
 			}
@@ -86,6 +92,7 @@ func retrieveStatusData() (*pumaStatusFinalOutput, error) {
 				Memory:         mem,
 				TotalTimeExec:  int(ttime),
 				CurrentPhase:   v.Phase,
+				Uptime:         utime / 1000,
 			}
 
 			workers = append(workers, worker)
