@@ -1,7 +1,6 @@
 package helper
 
 import (
-	"bufio"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -40,23 +39,20 @@ func readPumaStats(pspath string) (*pumaStatus, error) {
 		return nil, err
 	}
 
-	c, err := net.Dial("unix", strings.TrimPrefix(psf.ControlURL, "unix://"))
-	if err != nil {
-		return nil, err
-	}
-	defer c.Close()
-
-	_, err = c.Write([]byte(fmt.Sprintf("GET /stats?token=%s HTTP/1.0\r\n\r\n", psf.ControlAuthToken)))
-	if err != nil {
-		return nil, err
+	httpc := http.Client{
+		Transport: &http.Transport{
+			Dial: func(_, _ string) (net.Conn, error) {
+				return net.Dial("unix", strings.TrimPrefix(psf.ControlURL, "unix://"))
+			},
+		},
 	}
 
-	resp, err := http.ReadResponse(bufio.NewReader(c), &http.Request{Method: "GET"})
+	r, err := httpc.Get(fmt.Sprintf("http://unix/stats?token=%s", psf.ControlAuthToken))
 	if err != nil {
 		return nil, err
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		return nil, err
 	}
