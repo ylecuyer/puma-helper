@@ -83,7 +83,7 @@ puma-helper status
 
 * `filter`: Only show applications who match with given string
 * `json`: Return JSON object who contains all informations
-* `expand`: Expand more details about apps and workers
+* `details`: Show more details about apps and workers
 
 ## Report a bug
 

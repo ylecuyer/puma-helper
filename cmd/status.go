@@ -16,7 +16,7 @@ func init() {
 // statusCmd represents the status command
 var statusCmd = &cobra.Command{
 	Use:   "status",
-	Short: "Command permit to centralize puma unix socket status metrics in one place",
+	Short: "Centralize puma unix socket status metrics in one place",
 	Long:  "",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if viper.ConfigFileUsed() == "" {
@@ -39,7 +39,7 @@ var statusCmd = &cobra.Command{
 func setLocalFlags() {
 	statusCmd.Flags().StringVarP(&helper.Filter, "filter", "f", "", "Only show applications who match /w given string")
 	statusCmd.Flags().BoolVarP(&helper.JSONOutput, "json", "j", false, "Return JSON object who contains all informations")
-	statusCmd.Flags().BoolVar(&helper.ExpandDetails, "expand", false, "Expand more details about apps and workers")
+	statusCmd.Flags().BoolVarP(&helper.ExpandDetails, "details", "d", false, "Show more details about apps and workers")
 }
 
 func ensureArgsValidity() error {

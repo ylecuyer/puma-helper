@@ -18,6 +18,11 @@ type PumaHelperCfgData struct {
 	MemoryCritical int    `mapstructure:"memory_critical"`
 }
 
+const (
+	appGroupName  string = "/current"
+	pumastatePath string = appGroupName + "/tmp/pids/puma.state"
+)
+
 var (
 	// CfgFile point to struct who contain all options from puma-helper.yml file
 	CfgFile PumaHelperCfg

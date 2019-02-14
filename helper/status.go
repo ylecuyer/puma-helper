@@ -7,11 +7,6 @@ import (
 	log "github.com/Sirupsen/logrus"
 )
 
-const (
-	appGroupName  string = "/current"
-	pumastatePath string = appGroupName + "/tmp/pids/puma.state"
-)
-
 // RunStatus run all status logical command
 func RunStatus() error {
 	rsd, err := retrieveStatusData()

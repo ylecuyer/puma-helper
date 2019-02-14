@@ -28,7 +28,7 @@ func init() {
 // initCmd represents the init command
 var initCmd = &cobra.Command{
 	Use:   "init",
-	Short: "Command permit to init configuration file if it doesn't exist",
+	Short: "Initialize configuration file if it doesn't exist",
 	Long:  "",
 	RunE: func(cmd *cobra.Command, args []string) error {
 
