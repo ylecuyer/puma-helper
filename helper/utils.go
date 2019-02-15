@@ -11,6 +11,7 @@ import (
 
 	. "github.com/logrusorgru/aurora"
 	proc "github.com/shirou/gopsutil/process"
+	pidu "github.com/struCoder/pidusage"
 	yaml "gopkg.in/yaml.v2"
 )
 
@@ -91,7 +92,7 @@ func getTotalUptimeFromPID(pid int32) (int64, error) {
 	return t, nil
 }
 
-func getCPUFromPID(pid int32) (float64, error) {
+func getCPUPercentFromPID(pid int32) (float64, error) {
 	p, err := proc.NewProcess(pid)
 	if err != nil {
 		return 0.0, err
@@ -103,16 +104,22 @@ func getCPUFromPID(pid int32) (float64, error) {
 	return cpu, nil
 }
 
+func getCPUUsageFromPID(pid int32) (float64, error) {
+	s, err := pidu.GetStat(int(pid))
+	if err != nil {
+		return 0.0, err
+	}
+
+	return s.CPU, nil
+}
+
 func getMemoryFromPID(pid int32) (float64, error) {
-	p, err := proc.NewProcess(pid)
+	s, err := pidu.GetStat(int(pid))
 	if err != nil {
 		return 0.0, err
 	}
-	mem, err := p.MemoryInfoEx()
-	if err != nil {
-		return 0.0, err
-	}
-	return float64(mem.RSS+mem.Shared) / float64(1024*1024), nil
+
+	return s.Memory, nil
 }
 
 func timeElapsed(nT string) string {

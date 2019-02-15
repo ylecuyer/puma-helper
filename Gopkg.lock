@@ -178,6 +178,14 @@
   version = "v1.2.1"
 
 [[projects]]
+  digest = "1:f7f8482703f75a31596396949c6a73ca3f920326d045238d0268f37fad60f737"
+  name = "github.com/struCoder/pidusage"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "5e29cda97c066390d35b2eb889048fbc25381b2f"
+  version = "v0.1.2"
+
+[[projects]]
   branch = "master"
   digest = "1:1e52cd770971c1f625650971d6c6f1f34669aa314e8dfd246fe3349b70a5304f"
   name = "github.com/tcnksm/go-input"
@@ -236,6 +244,7 @@
     "github.com/shirou/gopsutil/process",
     "github.com/spf13/cobra",
     "github.com/spf13/viper",
+    "github.com/struCoder/pidusage",
     "github.com/tcnksm/go-input",
     "gopkg.in/yaml.v2",
   ]

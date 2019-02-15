@@ -69,7 +69,7 @@ func printStatusWorkers(ps []pumaStatusWorker, currentPhase int) error {
 				lcheckin = Brown(timeElapsed(key.LastCheckin))
 			}
 
-			fmt.Printf("* %d [%d] CPU: %s Mem: %s Phase: %s Uptime: %s Threads: %s (Last checkin: %s)\n", key.ID, key.Pid, colorCPU(key.CPUPercent), colorMemory(key.Memory), phase, timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)), asciiThreadLoad(key.CurrentThreads, key.MaxThreads), lcheckin)
+			fmt.Printf("* %d [%d] CPU: %s%% Mem: %sMiB Phase: %s Uptime: %s Threads: %s (Last checkin: %s)\n", key.ID, key.Pid, colorCPU(key.CPUPercent), colorMemory(key.Memory), phase, timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)), asciiThreadLoad(key.CurrentThreads, key.MaxThreads), lcheckin)
 			continue
 		}
 

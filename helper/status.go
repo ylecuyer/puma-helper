@@ -2,6 +2,7 @@ package helper
 
 import (
 	"fmt"
+	"math"
 	"strings"
 
 	log "github.com/Sirupsen/logrus"
@@ -51,11 +52,12 @@ func retrieveStatusData() (*pumaStatusFinalOutput, error) {
 		for _, v := range ps.WorkerStatus {
 			pid := int32(v.Pid)
 
-			cpu, err := getCPUFromPID(pid)
+			cpu, err := getCPUUsageFromPID(pid)
 			if err != nil {
 				return nil, err
 			}
 
+			// Assuming this timestamp is in Bytes
 			mem, err := getMemoryFromPID(pid)
 			if err != nil {
 				return nil, err
@@ -80,7 +82,7 @@ func retrieveStatusData() (*pumaStatusFinalOutput, error) {
 				CurrentThreads: v.LastStatus.MaxThreads - v.LastStatus.PoolCapacity,
 				MaxThreads:     v.LastStatus.MaxThreads,
 				CPUPercent:     cpu,
-				Memory:         mem,
+				Memory:         math.Round(mem / 1000000.0),
 				TotalTimeExec:  int(ttime),
 				CurrentPhase:   v.Phase,
 				Uptime:         utime / 1000,
