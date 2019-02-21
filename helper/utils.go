@@ -114,12 +114,15 @@ func getCPUUsageFromPID(pid int32) (float64, error) {
 }
 
 func getMemoryFromPID(pid int32) (float64, error) {
-	s, err := pidu.GetStat(int(pid))
+	p, err := proc.NewProcess(pid)
 	if err != nil {
 		return 0.0, err
 	}
-
-	return s.Memory, nil
+	mem, err := p.MemoryInfoEx()
+	if err != nil {
+		return 0.0, err
+	}
+	return float64(mem.RSS+mem.Shared) / float64(1024*1024), nil
 }
 
 func timeElapsed(nT string) string {
