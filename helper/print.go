@@ -60,7 +60,7 @@ func printStatusWorkers(ps []pumaStatusWorker, currentPhase int) error {
 	for _, key := range ps {
 		phase := Green(fmt.Sprintf("%d", key.CurrentPhase))
 		if key.CurrentPhase != currentPhase {
-			phase = Red(fmt.Sprintf("%d != %d app", key.CurrentPhase, currentPhase))
+			phase = Red(string(key.CurrentPhase))
 		}
 
 		if !ExpandDetails {
