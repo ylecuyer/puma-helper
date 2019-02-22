@@ -51,17 +51,17 @@ func retrieveStatusData() (*pumaStatusFinalOutput, error) {
 		for _, v := range ps.WorkerStatus {
 			pid := int32(v.Pid)
 
-			cpu, err := getCPUUsageFromPID(pid)
+			cpu, err := getCPUPercentFromPID(pid)
+			if err != nil {
+				return nil, err
+			}
+
+			cput, err := getCPUTimesFromPID(pid)
 			if err != nil {
 				return nil, err
 			}
 
 			mem, err := getMemoryFromPID(pid)
-			if err != nil {
-				return nil, err
-			}
-
-			ttime, err := getTotalExecTimeFromPID(pid)
 			if err != nil {
 				return nil, err
 			}
@@ -81,9 +81,9 @@ func retrieveStatusData() (*pumaStatusFinalOutput, error) {
 				MaxThreads:     v.LastStatus.MaxThreads,
 				CPUPercent:     cpu,
 				Memory:         mem,
-				TotalTimeExec:  int(ttime),
 				CurrentPhase:   v.Phase,
 				Uptime:         utime / 1000,
+				CPUTimes:       cput,
 			}
 
 			tcthreads += (v.LastStatus.MaxThreads - v.LastStatus.PoolCapacity)

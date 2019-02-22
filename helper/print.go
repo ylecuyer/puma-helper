@@ -60,7 +60,7 @@ func printStatusWorkers(ps []pumaStatusWorker, currentPhase int) error {
 	for _, key := range ps {
 		phase := Green(fmt.Sprintf("%d", key.CurrentPhase))
 		if key.CurrentPhase != currentPhase {
-			phase = Red(string(key.CurrentPhase))
+			phase = Red(fmt.Sprintf("%d", key.CurrentPhase))
 		}
 
 		if !ExpandDetails {
@@ -69,7 +69,7 @@ func printStatusWorkers(ps []pumaStatusWorker, currentPhase int) error {
 				lcheckin = Brown(timeElapsed(key.LastCheckin))
 			}
 
-			fmt.Printf("* %d [%d] CPU: %s%% Mem: %sMiB Phase: %s Uptime: %s Threads: %s (Last checkin: %s)\n", key.ID, key.Pid, colorCPU(key.CPUPercent), colorMemory(key.Memory), phase, timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)), asciiThreadLoad(key.CurrentThreads, key.MaxThreads), lcheckin)
+			fmt.Printf("* %d [%d] CPU Av: %s%% CPU Times: %s Mem: %sMiB Phase: %s Uptime: %s Threads: %s (Last checkin: %s)\n", key.ID, key.Pid, colorCPU(key.CPUPercent), timeElapsedFromSeconds(key.CPUTimes), colorMemory(key.Memory), phase, timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)), asciiThreadLoad(key.CurrentThreads, key.MaxThreads), lcheckin)
 			continue
 		}
 
@@ -80,8 +80,8 @@ func printStatusWorkers(ps []pumaStatusWorker, currentPhase int) error {
 			continue
 		}
 
-		fmt.Printf("*  %s ~ PID %d\t\tWorker ID %d\tCPU: %s%%\tMem: %s MiB\tPhase: %s\n", bootbtn, key.Pid, key.ID, colorCPU(key.CPUPercent), colorMemory(key.Memory), phase)
-		fmt.Printf("  Active threads: %s\tLast checkin: %s\tTotal CPU time: %s\tUptime: %s\n", asciiThreadLoad(key.CurrentThreads, key.MaxThreads), timeElapsed(key.LastCheckin), timeElapsed(time.Now().Add(time.Duration(-int64(key.TotalTimeExec))*time.Second).Format(time.RFC3339)), timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)))
+		fmt.Printf("*  %s ~ PID %d\tWorker ID %d\tCPU Average: %s%%\tMem: %sMiB\tActive threads: %s\n", bootbtn, key.Pid, key.ID, colorCPU(key.CPUPercent), colorMemory(key.Memory), asciiThreadLoad(key.CurrentThreads, key.MaxThreads))
+		fmt.Printf("  Phase: %s\tLast checkin: %s\tTotal CPU times: %s\tUptime: %s\n", phase, timeElapsed(key.LastCheckin), timeElapsedFromSeconds(key.CPUTimes), timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)))
 	}
 	return nil
 }

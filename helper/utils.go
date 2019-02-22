@@ -6,12 +6,12 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
 	. "github.com/logrusorgru/aurora"
 	proc "github.com/shirou/gopsutil/process"
-	pidu "github.com/struCoder/pidusage"
 	yaml "gopkg.in/yaml.v2"
 )
 
@@ -71,15 +71,6 @@ func readPumaStats(pspath string) (*pumaStatus, error) {
 	return &ps, nil
 }
 
-func getTotalExecTimeFromPID(pid int32) (float64, error) {
-	p, err := proc.NewProcess(pid)
-	if err != nil {
-		return 0.0, err
-	}
-	t, _ := p.Times()
-	return t.Total(), nil
-}
-
 func getTotalUptimeFromPID(pid int32) (int64, error) {
 	p, err := proc.NewProcess(pid)
 	if err != nil {
@@ -104,13 +95,16 @@ func getCPUPercentFromPID(pid int32) (float64, error) {
 	return cpu, nil
 }
 
-func getCPUUsageFromPID(pid int32) (float64, error) {
-	s, err := pidu.GetStat(int(pid))
+func getCPUTimesFromPID(pid int32) (int, error) {
+	p, err := proc.NewProcess(pid)
 	if err != nil {
 		return 0.0, err
 	}
-
-	return s.CPU, nil
+	t, err := p.Times()
+	if err != nil {
+		return 0.0, err
+	}
+	return strconv.Atoi(fmt.Sprintf("%.0f", t.Total()-(t.Idle+t.Iowait)))
 }
 
 func getMemoryFromPID(pid int32) (float64, error) {
@@ -137,6 +131,10 @@ func timeElapsed(nT string) string {
 	}
 
 	return fmt.Sprintf("%ss", strings.Split(elapsed, ".")[0])
+}
+
+func timeElapsedFromSeconds(t int) string {
+	return timeElapsed(time.Now().Add(time.Duration(-int64(t)) * time.Second).Format(time.RFC3339))
 }
 
 func colorState(fvalue, warnstate, criticalstate float64, strvalue string) string {

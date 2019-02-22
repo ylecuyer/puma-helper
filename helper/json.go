@@ -49,7 +49,7 @@ type pumaStatusWorker struct {
 	MaxThreads     int     `json:"max_threads"`
 	CPUPercent     float64 `json:"cpu_percent"`
 	Memory         float64 `json:"memory"`
-	TotalTimeExec  int     `json:"total_time_exec"`
 	CurrentPhase   int     `json:"current_phase"`
 	Uptime         int64   `json:"uptime"`
+	CPUTimes       int     `json:"cpu_times"`
 }
