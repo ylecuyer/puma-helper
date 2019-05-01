@@ -124,6 +124,15 @@ func buildStructGlobing(files []string) error {
 	cfgdata := make(map[string]helper.PumaHelperCfgData)
 
 	for fid := range files {
+		fi, err := os.Lstat(files[fid])
+		if err != nil {
+			return err
+		}
+
+		if fi.Mode()&os.ModeSymlink != 0 {
+			continue
+		}
+
 		cutpath := strings.Split(files[fid], "/")
 		cfgdata[cutpath[2]] = helper.PumaHelperCfgData{
 			Path:          "/home/" + cutpath[2],
