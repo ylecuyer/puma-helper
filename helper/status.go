@@ -2,6 +2,7 @@ package helper
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 
 	log "github.com/Sirupsen/logrus"
@@ -29,8 +30,16 @@ func retrieveStatusData() (*pumaStatusFinalOutput, error) {
 	appCount := 0
 	apps := []pumaStatusApplication{}
 
-	for appname, key := range CfgFile.Applications {
-		if Filter != "" && !strings.Contains(appname, Filter) {
+	sortedApps := make([]string, 0, len(CfgFile.Applications))
+	for k := range CfgFile.Applications {
+		sortedApps = append(sortedApps, k)
+	}
+	sort.Strings(sortedApps)
+
+	for _, appName := range sortedApps {
+		key := CfgFile.Applications[appName]
+
+		if Filter != "" && !strings.Contains(appName, Filter) {
 			continue
 		}
 
@@ -41,7 +50,7 @@ func retrieveStatusData() (*pumaStatusFinalOutput, error) {
 
 		ps, err := readPumaStats(pspath)
 		if err != nil {
-			log.Warn(fmt.Sprintf("[%s] configuration is invalid. Error: %v\n\n", appname, err))
+			log.Warn(fmt.Sprintf("[%s] configuration is invalid. Error: %v\n\n", appName, err))
 			continue
 		}
 
@@ -93,7 +102,7 @@ func retrieveStatusData() (*pumaStatusFinalOutput, error) {
 		}
 
 		app := pumaStatusApplication{
-			Name:                appname,
+			Name:                appName,
 			Description:         key.Description,
 			RootPath:            key.Path,
 			PumaStatePath:       pspath,
