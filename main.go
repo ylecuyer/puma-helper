@@ -1,9 +1,10 @@
 package main
 
 import (
-	log "github.com/Sirupsen/logrus"
 	"github.com/dimelo/puma-helper/cmd"
 	"github.com/dimelo/puma-helper/config"
+
+	log "github.com/sirupsen/logrus"
 )
 
 func main() {
