@@ -6,11 +6,11 @@ import (
 	. "github.com/logrusorgru/aurora"
 	"github.com/spf13/cobra"
 
-	helper "github.com/dimelo/puma-helper/helper"
+	version "github.com/dimelo/puma-helper/pkg/version"
 )
 
 const (
-	currentVersion = "v" + helper.Version
+	currentVersion = "v" + version.Version
 )
 
 func init() {

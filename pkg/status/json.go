@@ -1,4 +1,4 @@
-package helper
+package status
 
 type pumaStatus struct {
 	BootedWorkers int `json:"booted_workers"`

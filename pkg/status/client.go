@@ -1,4 +1,4 @@
-package helper
+package status
 
 // PumaHelperCfg point to struct who contain all options from puma-helper.yml file
 type PumaHelperCfg struct {

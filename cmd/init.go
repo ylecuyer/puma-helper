@@ -14,7 +14,7 @@ import (
 	yaml "gopkg.in/yaml.v2"
 
 	config "github.com/dimelo/puma-helper/config"
-	helper "github.com/dimelo/puma-helper/helper"
+	status "github.com/dimelo/puma-helper/pkg/status"
 )
 
 const (
@@ -121,7 +121,7 @@ var initCmd = &cobra.Command{
 }
 
 func buildStructGlobing(files []string) error {
-	cfgdata := make(map[string]helper.PumaHelperCfgData)
+	cfgdata := make(map[string]status.PumaHelperCfgData)
 
 	for fid := range files {
 		fi, err := os.Lstat(files[fid])
@@ -138,7 +138,7 @@ func buildStructGlobing(files []string) error {
 			key.PumastatePaths = append(key.PumastatePaths, files[fid])
 			cfgdata[cutpath[2]] = key
 		} else {
-			cfgdata[cutpath[2]] = helper.PumaHelperCfgData{
+			cfgdata[cutpath[2]] = status.PumaHelperCfgData{
 				Path:           "/home/" + cutpath[2],
 				PumastatePaths: []string{files[fid]},
 			}
@@ -146,26 +146,26 @@ func buildStructGlobing(files []string) error {
 	}
 
 	return marshalAndWriteConfigFile(
-		helper.PumaHelperCfg{
+		status.PumaHelperCfg{
 			Applications: cfgdata,
 		})
 }
 
 func buildAndWriteConfigFile(appname, apppath, pumastatepath string) error {
-	cfgdata := make(map[string]helper.PumaHelperCfgData)
+	cfgdata := make(map[string]status.PumaHelperCfgData)
 
-	cfgdata[appname] = helper.PumaHelperCfgData{
+	cfgdata[appname] = status.PumaHelperCfgData{
 		Path:           apppath,
 		PumastatePaths: []string{pumastatepath},
 	}
 
 	return marshalAndWriteConfigFile(
-		helper.PumaHelperCfg{
+		status.PumaHelperCfg{
 			Applications: cfgdata,
 		})
 }
 
-func marshalAndWriteConfigFile(cfg helper.PumaHelperCfg) error {
+func marshalAndWriteConfigFile(cfg status.PumaHelperCfg) error {
 	d, err := yaml.Marshal(&cfg)
 	if err != nil {
 		return err

@@ -1,21 +1,22 @@
-package helper
+package status
 
 import (
 	"encoding/json"
 	"fmt"
 	"time"
 
+	version "github.com/dimelo/puma-helper/pkg/version"
 	. "github.com/logrusorgru/aurora"
 )
 
 func printStatusGlobalInformations() {
 	fmt.Println("---------- Global informations ----------")
 	if ExpandDetails {
-		fmt.Printf("Version: %s\n", Version)
+		fmt.Printf("Version: %s\n", version.Version)
 		fmt.Printf("Date: %s\n\n\n", time.Now().Format(time.RFC1123Z))
 		return
 	}
-	fmt.Printf("Version: %s | Date: %s\n\n", Version, time.Now().Format(time.RFC1123Z))
+	fmt.Printf("Version: %s | Date: %s\n\n", version.Version, time.Now().Format(time.RFC1123Z))
 }
 
 // printStatusApps print apps context one by one

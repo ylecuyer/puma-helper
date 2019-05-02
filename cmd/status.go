@@ -3,7 +3,7 @@ package cmd
 import (
 	"errors"
 
-	helper "github.com/dimelo/puma-helper/helper"
+	status "github.com/dimelo/puma-helper/pkg/status"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -22,13 +22,13 @@ var statusCmd = &cobra.Command{
 		if viper.ConfigFileUsed() == "" {
 			return nil
 		}
-		if err := viper.Unmarshal(&helper.CfgFile); err != nil {
+		if err := viper.Unmarshal(&status.CfgFile); err != nil {
 			return err
 		}
 		if err := ensureArgsValidity(); err != nil {
 			return err
 		}
-		if err := helper.RunStatus(); err != nil {
+		if err := status.RunStatus(); err != nil {
 			return err
 		}
 
@@ -37,15 +37,15 @@ var statusCmd = &cobra.Command{
 }
 
 func setLocalFlags() {
-	statusCmd.Flags().StringVarP(&helper.Filter, "filter", "f", "", "Only show applications who match /w given string")
-	statusCmd.Flags().BoolVarP(&helper.JSONOutput, "json", "j", false, "Return JSON object who contains all informations")
-	statusCmd.Flags().BoolVarP(&helper.ExpandDetails, "details", "d", false, "Show more details about apps and workers")
+	statusCmd.Flags().StringVarP(&status.Filter, "filter", "f", "", "Only show applications who match /w given string")
+	statusCmd.Flags().BoolVarP(&status.JSONOutput, "json", "j", false, "Return JSON object who contains all informations")
+	statusCmd.Flags().BoolVarP(&status.ExpandDetails, "details", "d", false, "Show more details about apps and workers")
 }
 
 func ensureArgsValidity() error {
 	err := ""
 	finalerr := ""
-	for appname, key := range helper.CfgFile.Applications {
+	for appname, key := range status.CfgFile.Applications {
 
 		if key.Path == "" {
 			err += "path missing, "
