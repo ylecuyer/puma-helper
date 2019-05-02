@@ -28,6 +28,12 @@ applications:
     # Path to your application
     path : "/home/path/to/your/app"
 
+    # Mandtory - array of string
+    # Path(s) to puma state file(s)
+    pumastatepaths:
+    - /home/your_app/current/tmp/pids/puma.state
+    - /home/your_app/current/tmp/pids/puma_api.state
+
     # Optional - string
     # Description or informations related to the application
     # Default description: ""

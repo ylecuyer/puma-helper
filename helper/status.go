@@ -43,75 +43,88 @@ func retrieveStatusData() (*pumaStatusFinalOutput, error) {
 			continue
 		}
 
-		pspath := key.Path + pumastatePath
-		if key.PumastatePath != "" {
-			pspath = key.PumastatePath
+		var pspath []string
+		pspath = append(pspath, key.Path+pumastatePath)
+		if len(key.PumastatePaths) > 0 {
+			pspath = key.PumastatePaths
 		}
 
-		ps, err := readPumaStats(pspath)
+		pss, err := readPumaStats(pspath)
 		if err != nil {
 			log.Warn(fmt.Sprintf("[%s] configuration is invalid. Error: %v\n\n", appName, err))
 			continue
 		}
 
-		tmthreads := 0
-		tcthreads := 0
-		workers := []pumaStatusWorker{}
-		for _, v := range ps.WorkerStatus {
-			pid := int32(v.Pid)
+		pssps := []pumaStatusStatePaths{}
 
-			cpu, err := getCPUPercentFromPID(pid)
-			if err != nil {
-				return nil, err
+		for fid, ps := range pss {
+
+			workers := []pumaStatusWorker{}
+			tmthreads := 0
+			tcthreads := 0
+
+			for _, v := range ps.WorkerStatus {
+				pid := int32(v.Pid)
+
+				cpu, err := getCPUPercentFromPID(pid)
+				if err != nil {
+					return nil, err
+				}
+
+				cput, err := getCPUTimesFromPID(pid)
+				if err != nil {
+					return nil, err
+				}
+
+				mem, err := getMemoryFromPID(pid)
+				if err != nil {
+					return nil, err
+				}
+
+				// Assuming this timestamp is in milliseconds
+				utime, err := getTotalUptimeFromPID(pid)
+				if err != nil {
+					return nil, err
+				}
+
+				worker := pumaStatusWorker{
+					ID:             v.Index,
+					IsBooted:       v.Booted,
+					Pid:            v.Pid,
+					LastCheckin:    v.LastCheckin,
+					CurrentThreads: v.LastStatus.MaxThreads - v.LastStatus.PoolCapacity,
+					MaxThreads:     v.LastStatus.MaxThreads,
+					CPUPercent:     cpu,
+					Memory:         mem,
+					CurrentPhase:   v.Phase,
+					Uptime:         utime / 1000,
+					CPUTimes:       cput,
+				}
+
+				tcthreads += (v.LastStatus.MaxThreads - v.LastStatus.PoolCapacity)
+				tmthreads += v.LastStatus.MaxThreads
+
+				workers = append(workers, worker)
 			}
 
-			cput, err := getCPUTimesFromPID(pid)
-			if err != nil {
-				return nil, err
+			pssp := pumaStatusStatePaths{
+				PumaStatePath:       pspath[fid],
+				BootedWorkers:       ps.BootedWorkers,
+				Workers:             workers,
+				TotalCurrentThreads: tcthreads,
+				TotalMaxThreads:     tmthreads,
+				MainPid:             ps.MainPid,
+				AppCurrentPhase:     ps.Phase,
 			}
 
-			mem, err := getMemoryFromPID(pid)
-			if err != nil {
-				return nil, err
-			}
-
-			// Assuming this timestamp is in milliseconds
-			utime, err := getTotalUptimeFromPID(pid)
-			if err != nil {
-				return nil, err
-			}
-
-			worker := pumaStatusWorker{
-				ID:             v.Index,
-				IsBooted:       v.Booted,
-				Pid:            v.Pid,
-				LastCheckin:    v.LastCheckin,
-				CurrentThreads: v.LastStatus.MaxThreads - v.LastStatus.PoolCapacity,
-				MaxThreads:     v.LastStatus.MaxThreads,
-				CPUPercent:     cpu,
-				Memory:         mem,
-				CurrentPhase:   v.Phase,
-				Uptime:         utime / 1000,
-				CPUTimes:       cput,
-			}
-
-			tcthreads += (v.LastStatus.MaxThreads - v.LastStatus.PoolCapacity)
-			tmthreads += v.LastStatus.MaxThreads
-
-			workers = append(workers, worker)
+			pssps = append(pssps, pssp)
 		}
 
 		app := pumaStatusApplication{
-			Name:                appName,
-			Description:         key.Description,
-			RootPath:            key.Path,
-			PumaStatePath:       pspath,
-			BootedWorkers:       ps.BootedWorkers,
-			Worker:              workers,
-			AppCurrentPhase:     ps.Phase,
-			TotalCurrentThreads: tcthreads,
-			TotalMaxThreads:     tmthreads,
-			MainPid:             ps.MainPid,
+			Name:           appName,
+			Description:    key.Description,
+			RootPath:       key.Path,
+			PumaStatePaths: pssps,
 		}
 
 		apps = append(apps, app)

@@ -134,9 +134,14 @@ func buildStructGlobing(files []string) error {
 		}
 
 		cutpath := strings.Split(files[fid], "/")
-		cfgdata[cutpath[2]] = helper.PumaHelperCfgData{
-			Path:          "/home/" + cutpath[2],
-			PumastatePath: files[fid],
+		if key, ok := cfgdata[cutpath[2]]; ok {
+			key.PumastatePaths = append(key.PumastatePaths, files[fid])
+			cfgdata[cutpath[2]] = key
+		} else {
+			cfgdata[cutpath[2]] = helper.PumaHelperCfgData{
+				Path:           "/home/" + cutpath[2],
+				PumastatePaths: []string{files[fid]},
+			}
 		}
 	}
 
@@ -150,8 +155,8 @@ func buildAndWriteConfigFile(appname, apppath, pumastatepath string) error {
 	cfgdata := make(map[string]helper.PumaHelperCfgData)
 
 	cfgdata[appname] = helper.PumaHelperCfgData{
-		Path:          apppath,
-		PumastatePath: pumastatepath,
+		Path:           apppath,
+		PumastatePaths: []string{pumastatepath},
 	}
 
 	return marshalAndWriteConfigFile(

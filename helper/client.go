@@ -7,15 +7,15 @@ type PumaHelperCfg struct {
 
 // PumaHelperCfgData contain all options per app from puma-helper.yml file
 type PumaHelperCfgData struct {
-	Path           string `mapstructure:"path"`
-	Description    string `mapstructure:"description"`
-	PumastatePath  string `mapstructure:"pumastatepath"`
-	ThreadWarn     int    `mapstructure:"thread_warn"`
-	ThreadCritical int    `mapstructure:"thread_critical"`
-	CPUWarn        int    `mapstructure:"cpu_warn"`
-	CPUCritical    int    `mapstructure:"cpu_critical"`
-	MemoryWarn     int    `mapstructure:"memory_warn"`
-	MemoryCritical int    `mapstructure:"memory_critical"`
+	Path           string   `mapstructure:"path"`
+	Description    string   `mapstructure:"description"`
+	PumastatePaths []string `mapstructure:"pumastatepaths"`
+	ThreadWarn     int      `mapstructure:"thread_warn"`
+	ThreadCritical int      `mapstructure:"thread_critical"`
+	CPUWarn        int      `mapstructure:"cpu_warn"`
+	CPUCritical    int      `mapstructure:"cpu_critical"`
+	MemoryWarn     int      `mapstructure:"memory_warn"`
+	MemoryCritical int      `mapstructure:"memory_critical"`
 }
 
 const (

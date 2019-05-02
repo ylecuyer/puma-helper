@@ -27,14 +27,18 @@ type pumaStatusFinalOutput struct {
 }
 
 type pumaStatusApplication struct {
-	Name                string             `json:"name"`
-	Description         string             `json:"description"`
-	RootPath            string             `json:"root_path"`
+	Name           string                 `json:"name"`
+	Description    string                 `json:"description"`
+	RootPath       string                 `json:"root_path"`
+	PumaStatePaths []pumaStatusStatePaths `json:"puma_state_paths"`
+}
+
+type pumaStatusStatePaths struct {
 	PumaStatePath       string             `json:"puma_state_path"`
 	BootedWorkers       int                `json:"booted_workers"`
 	AppCurrentPhase     int                `json:"app_current_phase"`
 	OldWorkers          int                `json:"old_workers"`
-	Worker              []pumaStatusWorker `json:"worker"`
+	Workers             []pumaStatusWorker `json:"workers"`
 	TotalMaxThreads     int                `json:"total_max_threads"`
 	TotalCurrentThreads int                `json:"total_current_threads"`
 	MainPid             int                `json:"main_pid"`

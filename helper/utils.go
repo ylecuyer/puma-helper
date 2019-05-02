@@ -27,48 +27,55 @@ type pumaStateFile struct {
 }
 
 // readPumaStats get and unmarshal JSON using puma unix socket
-func readPumaStats(pspath string) (*pumaStatus, error) {
-	data, err := ioutil.ReadFile(pspath)
-	if err != nil {
-		return nil, err
-	}
+func readPumaStats(paths []string) ([]pumaStatus, error) {
 
-	var psf pumaStateFile
+	var pspaths []pumaStatus
 
-	if err := yaml.Unmarshal(data, &psf); err != nil {
-		return nil, err
-	}
+	for _, path := range paths {
+		data, err := ioutil.ReadFile(path)
+		if err != nil {
+			return nil, err
+		}
 
-	httpc := http.Client{
-		Transport: &http.Transport{
-			Dial: func(_, _ string) (net.Conn, error) {
-				return net.Dial("unix", strings.TrimPrefix(psf.ControlURL, "unix://"))
+		var psf pumaStateFile
+
+		if err := yaml.Unmarshal(data, &psf); err != nil {
+			return nil, err
+		}
+
+		httpc := http.Client{
+			Transport: &http.Transport{
+				Dial: func(_, _ string) (net.Conn, error) {
+					return net.Dial("unix", strings.TrimPrefix(psf.ControlURL, "unix://"))
+				},
 			},
-		},
+		}
+
+		r, err := httpc.Get(fmt.Sprintf("http://unix/stats?token=%s", psf.ControlAuthToken))
+		if err != nil {
+			return nil, err
+		}
+
+		body, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			return nil, err
+		}
+
+		ps := pumaStatus{
+			MainPid: psf.Pid,
+		}
+
+		if err := json.Unmarshal(body, &ps); err != nil {
+			return nil, err
+		}
+
+		pspaths = append(pspaths, ps)
 	}
 
-	r, err := httpc.Get(fmt.Sprintf("http://unix/stats?token=%s", psf.ControlAuthToken))
-	if err != nil {
-		return nil, err
-	}
+	//body, _ := exec.Command("cat", "/go/src/github.com/dimelo/puma-helper/output.txt").Output()
+	//fmt.Println(pspath)
 
-	body, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	//fmt.Println(pcpath, pspath)
-	//output, err := exec.Command("cat", "/go/src/github.com/dimelo/puma-helper/output.txt").Output()
-
-	ps := pumaStatus{
-		MainPid: psf.Pid,
-	}
-
-	if err := json.Unmarshal(body, &ps); err != nil {
-		return nil, err
-	}
-
-	return &ps, nil
+	return pspaths, nil
 }
 
 func getTotalUptimeFromPID(pid int32) (int64, error) {

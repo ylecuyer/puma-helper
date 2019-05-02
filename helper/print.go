@@ -21,29 +21,34 @@ func printStatusGlobalInformations() {
 // printStatusApps print apps context one by one
 func (ps pumaStatusFinalOutput) printStatusApps() error {
 	fmt.Println("----------- Application groups -----------")
-
 	line := 0
+
 	for _, key := range ps.Application {
 		currentApp = key.Name
 
-		if ExpandDetails {
-			fmt.Printf("-> %s application\n", key.Name)
-			if key.Description != "" {
-				fmt.Printf("  About: %s\n", key.Description)
-			}
-			fmt.Printf("  App root: %s\n", key.RootPath)
-			fmt.Printf("  Booted workers: %d | PID: %d\n", key.BootedWorkers, key.MainPid)
-			fmt.Printf("  Current phase: %d | Old workers: %d | Active threads: %s\n\n", key.AppCurrentPhase, key.OldWorkers, asciiThreadLoad(key.TotalCurrentThreads, key.TotalMaxThreads))
+		basetitle := fmt.Sprintf("-> %s application | App root: %s", currentApp, key.RootPath)
+		if len(key.Description) == 0 {
+			fmt.Printf(basetitle)
 		} else {
-			if key.OldWorkers > 0 {
-				fmt.Printf("-> %s %d (%s) Phase: %d | Workers: %d (Old: %d) | Active threads: %s\n\n", key.Name, key.MainPid, key.RootPath, key.AppCurrentPhase, key.BootedWorkers, key.OldWorkers, asciiThreadLoad(key.TotalCurrentThreads, key.TotalMaxThreads))
-			} else {
-				fmt.Printf("-> %s %d (%s) Phase: %d | Workers: %d | Active threads: %s\n\n", key.Name, key.MainPid, key.RootPath, key.AppCurrentPhase, key.BootedWorkers, asciiThreadLoad(key.TotalCurrentThreads, key.TotalMaxThreads))
-			}
+			fmt.Printf(basetitle + " | About: " + key.Description)
 		}
 
-		if err := printStatusWorkers(key.Worker, key.AppCurrentPhase); err != nil {
-			return err
+		for _, keypath := range key.PumaStatePaths {
+			if ExpandDetails {
+				fmt.Printf("\n  -> File: %s\n", keypath.PumaStatePath)
+				fmt.Printf("  Booted workers: %d | PID: %d\n", keypath.BootedWorkers, keypath.MainPid)
+				fmt.Printf("  Current phase: %d | Old workers: %d | Active threads: %s\n\n", keypath.AppCurrentPhase, keypath.OldWorkers, asciiThreadLoad(keypath.TotalCurrentThreads, keypath.TotalMaxThreads))
+			} else {
+				if keypath.OldWorkers > 0 {
+					fmt.Printf("\n-> %d (%s) Phase: %d | Workers: %d (Old: %d) | Active threads: %s\n\n", keypath.MainPid, keypath.PumaStatePath, keypath.AppCurrentPhase, keypath.BootedWorkers, keypath.OldWorkers, asciiThreadLoad(keypath.TotalCurrentThreads, keypath.TotalMaxThreads))
+				} else {
+					fmt.Printf("\n-> %d (%s) Phase: %d | Workers: %d | Active threads: %s\n\n", keypath.MainPid, keypath.PumaStatePath, keypath.AppCurrentPhase, keypath.BootedWorkers, asciiThreadLoad(keypath.TotalCurrentThreads, keypath.TotalMaxThreads))
+				}
+			}
+
+			if err := printStatusWorkers(keypath.Workers, keypath.AppCurrentPhase); err != nil {
+				return err
+			}
 		}
 
 		if line < len(ps.Application)-1 {
