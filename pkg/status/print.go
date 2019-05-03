@@ -71,7 +71,7 @@ func printStatusWorkers(ps []pumaStatusWorker, currentPhase int) error {
 
 		if !ExpandDetails {
 			lcheckin := Green(timeElapsed(key.LastCheckin))
-			if len(timeElapsed(key.LastCheckin)) >= 3 {
+			if len(timeElapsed(key.LastCheckin)) > 2 {
 				lcheckin = Brown(timeElapsed(key.LastCheckin))
 			}
 

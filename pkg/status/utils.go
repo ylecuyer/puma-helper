@@ -132,16 +132,11 @@ func timeElapsed(nT string) string {
 		return "unrecognized time format"
 	}
 
-	elapsed := time.Since(tx).String()
-	if strings.Contains(elapsed, "ms") {
-		return "~0s"
-	}
-
-	return fmt.Sprintf("%ss", strings.Split(elapsed, ".")[0])
+	return elapsedFormatted(tx, time.Now().UTC())
 }
 
 func timeElapsedFromSeconds(t int) string {
-	return timeElapsed(time.Now().Add(time.Duration(-int64(t)) * time.Second).Format(time.RFC3339))
+	return timeElapsed(time.Now().UTC().Add(time.Duration(int64(t)) * time.Second).Format(time.RFC3339))
 }
 
 func colorState(fvalue, warnstate, criticalstate float64, strvalue string) string {
@@ -194,4 +189,85 @@ func colorMemory(memory float64) string {
 	}
 
 	return colorState(memory, float64(mwarn), float64(mcritical), fmt.Sprintf("%.1f", memory))
+}
+
+func elapsedFormatted(from, to time.Time) string {
+	_, years, months, days, hours, minutes, seconds, _ := elapsed(from, to)
+
+	estr := ""
+
+	if years > 0 {
+		estr = fmt.Sprintf("%dy%dm%dd", years, months, days)
+	} else if months > 0 {
+		estr = fmt.Sprintf("%dm%dd%dh", months, days, hours)
+	} else if days > 0 {
+		estr = fmt.Sprintf("%dd%dh%dm", days, hours, minutes)
+	} else if hours > 0 {
+		estr = fmt.Sprintf("%dh%dm%ds", hours, minutes, seconds)
+	} else if minutes > 0 {
+		estr = fmt.Sprintf("%dm%ds", minutes, seconds)
+	} else {
+		estr = fmt.Sprintf("%ds", seconds)
+	}
+
+	return estr
+}
+
+func elapsed(from, to time.Time) (inverted bool, years, months, days, hours, minutes, seconds, nanoseconds int) {
+	if from.Location() != to.Location() {
+		to = to.In(to.Location())
+	}
+
+	inverted = false
+	if from.After(to) {
+		inverted = true
+		from, to = to, from
+	}
+
+	y1, M1, d1 := from.Date()
+	y2, M2, d2 := to.Date()
+
+	h1, m1, s1 := from.Clock()
+	h2, m2, s2 := to.Clock()
+
+	ns1, ns2 := from.Nanosecond(), to.Nanosecond()
+
+	years = y2 - y1
+	months = int(M2 - M1)
+	days = d2 - d1
+
+	hours = h2 - h1
+	minutes = m2 - m1
+	seconds = s2 - s1
+	nanoseconds = ns2 - ns1
+
+	if nanoseconds < 0 {
+		nanoseconds += 1e9
+		seconds--
+	}
+	if seconds < 0 {
+		seconds += 60
+		minutes--
+	}
+	if minutes < 0 {
+		minutes += 60
+		hours--
+	}
+	if hours < 0 {
+		hours += 24
+		days--
+	}
+	if days < 0 {
+		days += daysIn(y2, M2-1)
+		months--
+	}
+	if months < 0 {
+		months += 12
+		years--
+	}
+	return
+}
+
+func daysIn(year int, month time.Month) int {
+	return time.Date(year, month+1, 0, 0, 0, 0, 0, time.UTC).Day()
 }
