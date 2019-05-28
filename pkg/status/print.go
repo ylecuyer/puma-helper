@@ -7,21 +7,15 @@ import (
 
 	version "github.com/dimelo/puma-helper/pkg/version"
 	. "github.com/logrusorgru/aurora"
+	log "github.com/sirupsen/logrus"
 )
 
-func printStatusGlobalInformations() {
-	fmt.Println("---------- Global informations ----------")
-	if ExpandDetails {
-		fmt.Printf("Version: %s\n", version.Version)
-		fmt.Printf("Date: %s\n\n\n", time.Now().Format(time.RFC1123Z))
-		return
-	}
+func printStatusHeader() {
 	fmt.Printf("Version: %s | Date: %s\n\n", version.Version, time.Now().Format(time.RFC1123Z))
 }
 
 // printStatusApps print apps context one by one
-func (ps pumaStatusFinalOutput) printStatusApps() error {
-	fmt.Println("----------- Application groups -----------")
+func (ps pumaStatusFinalOutput) printStatusApps() {
 	line := 0
 
 	for _, key := range ps.Application {
@@ -47,9 +41,7 @@ func (ps pumaStatusFinalOutput) printStatusApps() error {
 				}
 			}
 
-			if err := printStatusWorkers(keypath.Workers, keypath.AppCurrentPhase); err != nil {
-				return err
-			}
+			printStatusWorkers(keypath.Workers, keypath.AppCurrentPhase)
 		}
 
 		if line < len(ps.Application)-1 {
@@ -57,12 +49,10 @@ func (ps pumaStatusFinalOutput) printStatusApps() error {
 			line++
 		}
 	}
-
-	return nil
 }
 
 // printStatusWorkers print workers status context of one app
-func printStatusWorkers(ps []pumaStatusWorker, currentPhase int) error {
+func printStatusWorkers(ps []pumaStatusWorker, currentPhase int) {
 	for _, key := range ps {
 		phase := Green(fmt.Sprintf("%d", key.CurrentPhase))
 		if key.CurrentPhase != currentPhase {
@@ -89,7 +79,16 @@ func printStatusWorkers(ps []pumaStatusWorker, currentPhase int) error {
 		fmt.Printf("*  %s ~ PID %d\tWorker ID %d\tCPU Average: %s%%\tMem: %sM\tActive threads: %s\n", bootbtn, key.Pid, key.ID, colorCPU(key.CPUPercent), colorMemory(key.Memory), asciiThreadLoad(key.CurrentThreads, key.MaxThreads))
 		fmt.Printf("  Phase: %s\tLast checkin: %s\tTotal CPU times: %s\tUptime: %s\n", phase, timeElapsed(key.LastCheckin), timeElapsedFromSeconds(key.CPUTimes), timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)))
 	}
-	return nil
+}
+
+func printRetrieveStatusError() {
+	for k, v := range retrieveStatusError {
+		if k == 0 {
+			fmt.Println()
+		}
+
+		log.Warn(v)
+	}
 }
 
 // printAndBuildJSON marshal and print pumaStatusFinalOutput struct

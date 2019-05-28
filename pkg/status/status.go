@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"sort"
 	"strings"
-
-	log "github.com/sirupsen/logrus"
 )
 
 // RunStatus run all status logical command
@@ -19,9 +17,11 @@ func RunStatus() error {
 		return rsd.printAndBuildJSON()
 	}
 
-	printStatusGlobalInformations()
+	printStatusHeader()
+	rsd.printStatusApps()
+	printRetrieveStatusError()
 
-	return rsd.printStatusApps()
+	return nil
 }
 
 // retrieveStatusData fetch all data from Puma instances/workers
@@ -51,7 +51,7 @@ func retrieveStatusData() (*pumaStatusFinalOutput, error) {
 
 		pss, err := readPumaStats(pspath)
 		if err != nil {
-			log.Warn(fmt.Sprintf("[%s] configuration is invalid. Error: %v\n\n", appName, err))
+			retrieveStatusError = append(retrieveStatusError, fmt.Sprintf("[%s] configuration is invalid. Error: %v", appName, err))
 			continue
 		}
 

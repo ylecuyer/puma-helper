@@ -34,4 +34,6 @@ var (
 	ExpandDetails bool
 
 	currentApp string
+
+	retrieveStatusError []string
 )
