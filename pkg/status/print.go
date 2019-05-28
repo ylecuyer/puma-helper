@@ -63,25 +63,29 @@ func printStatusWorkers(ps []pumaStatusWorker, currentPhase int) {
 		te := timeElapsed(key.LastCheckin)
 
 		if !ExpandDetails {
-			fmt.Printf("  └ %d CPU Av: %s%% CPU Times: %s Mem: %sM Phase: %s Uptime: %s Load: %s", key.Pid, colorCPU(key.CPUPercent), timeElapsedFromSeconds(key.CPUTimes), colorMemory(key.Memory), phase, timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)), asciiThreadLoad(key.CurrentThreads, key.MaxThreads))
+			fmt.Printf("  └ %d CPU Av: %s%% CPU Times: %s Mem: %sM Uptime: %s Load: %s", key.Pid, colorCPU(key.CPUPercent), timeElapsedFromSeconds(key.CPUTimes), colorMemory(key.Memory), timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)), asciiThreadLoad(key.CurrentThreads, key.MaxThreads))
 
 			if len(te) >= 3 || !strings.Contains(te, "s") {
-				fmt.Printf(" %s", Brown("Last checkin: "+te))
+				fmt.Printf(" %s", Red("Last checkin: "+te))
 			}
+
+			if key.CurrentPhase != currentPhase {
+				fmt.Printf(" %s", Red("Phase: "+string(key.CurrentPhase)))
+			}
+
 			fmt.Println()
 
-			continue
-		}
+		} else {
+			bootbtn := BgGreen(Bold("[UP]"))
+			if !key.IsBooted {
+				bootbtn = BgRed(Bold("[DOWN]"))
+				fmt.Printf("*  %s ~ PID %d\tWorker ID %d\tLast checkin: %s\n", bootbtn, key.Pid, key.ID, te)
+				continue
+			}
 
-		bootbtn := BgGreen(Bold("[UP]"))
-		if !key.IsBooted {
-			bootbtn = BgRed(Bold("[DOWN]"))
-			fmt.Printf("*  %s ~ PID %d\tWorker ID %d\tLast checkin: %s\n", bootbtn, key.Pid, key.ID, te)
-			continue
+			fmt.Printf("*  %s ~ PID %d\tWorker ID %d\tCPU Average: %s%%\tMem: %sM\tLoad: %s\n", bootbtn, key.Pid, key.ID, colorCPU(key.CPUPercent), colorMemory(key.Memory), asciiThreadLoad(key.CurrentThreads, key.MaxThreads))
+			fmt.Printf("  Phase: %s\tLast checkin: %s\tTotal CPU times: %s\tUptime: %s\n", phase, te, timeElapsedFromSeconds(key.CPUTimes), timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)))
 		}
-
-		fmt.Printf("*  %s ~ PID %d\tWorker ID %d\tCPU Average: %s%%\tMem: %sM\tLoad: %s\n", bootbtn, key.Pid, key.ID, colorCPU(key.CPUPercent), colorMemory(key.Memory), asciiThreadLoad(key.CurrentThreads, key.MaxThreads))
-		fmt.Printf("  Phase: %s\tLast checkin: %s\tTotal CPU times: %s\tUptime: %s\n", phase, te, timeElapsedFromSeconds(key.CPUTimes), timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)))
 	}
 }
 
