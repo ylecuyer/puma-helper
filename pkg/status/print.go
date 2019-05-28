@@ -33,12 +33,12 @@ func (ps pumaStatusFinalOutput) printStatusApps() {
 			if ExpandDetails {
 				fmt.Printf("\n  -> File: %s\n", keypath.PumaStatePath)
 				fmt.Printf("  Booted workers: %d | PID: %d\n", keypath.BootedWorkers, keypath.MainPid)
-				fmt.Printf("  Current phase: %d | Old workers: %d | Active threads: %s\n\n", keypath.AppCurrentPhase, keypath.OldWorkers, asciiThreadLoad(keypath.TotalCurrentThreads, keypath.TotalMaxThreads))
+				fmt.Printf("  Current phase: %d | Old workers: %d | Load: %s\n\n", keypath.AppCurrentPhase, keypath.OldWorkers, asciiThreadLoad(keypath.TotalCurrentThreads, keypath.TotalMaxThreads))
 			} else {
 				if keypath.OldWorkers > 0 {
-					fmt.Printf("\n-> %d (%s) Phase: %d | Workers: %d (Old: %d) | Active threads: %s\n", keypath.MainPid, keypath.PumaStatePath, keypath.AppCurrentPhase, keypath.BootedWorkers, keypath.OldWorkers, asciiThreadLoad(keypath.TotalCurrentThreads, keypath.TotalMaxThreads))
+					fmt.Printf("\n-> %d (%s) Phase: %d | Workers: %d (Old: %d) | Load: %s\n", keypath.MainPid, keypath.PumaStatePath, keypath.AppCurrentPhase, keypath.BootedWorkers, keypath.OldWorkers, asciiThreadLoad(keypath.TotalCurrentThreads, keypath.TotalMaxThreads))
 				} else {
-					fmt.Printf("\n-> %d (%s) Phase: %d | Workers: %d | Active threads: %s\n", keypath.MainPid, keypath.PumaStatePath, keypath.AppCurrentPhase, keypath.BootedWorkers, asciiThreadLoad(keypath.TotalCurrentThreads, keypath.TotalMaxThreads))
+					fmt.Printf("\n-> %d (%s) Phase: %d | Workers: %d | Load: %s\n", keypath.MainPid, keypath.PumaStatePath, keypath.AppCurrentPhase, keypath.BootedWorkers, asciiThreadLoad(keypath.TotalCurrentThreads, keypath.TotalMaxThreads))
 				}
 			}
 
@@ -63,7 +63,7 @@ func printStatusWorkers(ps []pumaStatusWorker, currentPhase int) {
 		te := timeElapsed(key.LastCheckin)
 
 		if !ExpandDetails {
-			fmt.Printf("  └ %d CPU Av: %s%% CPU Times: %s Mem: %sM Phase: %s Uptime: %s Threads: %s", key.Pid, colorCPU(key.CPUPercent), timeElapsedFromSeconds(key.CPUTimes), colorMemory(key.Memory), phase, timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)), asciiThreadLoad(key.CurrentThreads, key.MaxThreads))
+			fmt.Printf("  └ %d CPU Av: %s%% CPU Times: %s Mem: %sM Phase: %s Uptime: %s Load: %s", key.Pid, colorCPU(key.CPUPercent), timeElapsedFromSeconds(key.CPUTimes), colorMemory(key.Memory), phase, timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)), asciiThreadLoad(key.CurrentThreads, key.MaxThreads))
 
 			if len(te) >= 3 || !strings.Contains(te, "s") {
 				fmt.Printf(" %s", Brown("Last checkin: "+te))
@@ -80,7 +80,7 @@ func printStatusWorkers(ps []pumaStatusWorker, currentPhase int) {
 			continue
 		}
 
-		fmt.Printf("*  %s ~ PID %d\tWorker ID %d\tCPU Average: %s%%\tMem: %sM\tActive threads: %s\n", bootbtn, key.Pid, key.ID, colorCPU(key.CPUPercent), colorMemory(key.Memory), asciiThreadLoad(key.CurrentThreads, key.MaxThreads))
+		fmt.Printf("*  %s ~ PID %d\tWorker ID %d\tCPU Average: %s%%\tMem: %sM\tLoad: %s\n", bootbtn, key.Pid, key.ID, colorCPU(key.CPUPercent), colorMemory(key.Memory), asciiThreadLoad(key.CurrentThreads, key.MaxThreads))
 		fmt.Printf("  Phase: %s\tLast checkin: %s\tTotal CPU times: %s\tUptime: %s\n", phase, te, timeElapsedFromSeconds(key.CPUTimes), timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)))
 	}
 }
