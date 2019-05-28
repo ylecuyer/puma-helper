@@ -41,9 +41,9 @@ func (ps pumaStatusFinalOutput) printStatusApps() error {
 				fmt.Printf("  Current phase: %d | Old workers: %d | Active threads: %s\n\n", keypath.AppCurrentPhase, keypath.OldWorkers, asciiThreadLoad(keypath.TotalCurrentThreads, keypath.TotalMaxThreads))
 			} else {
 				if keypath.OldWorkers > 0 {
-					fmt.Printf("\n-> %d (%s) Phase: %d | Workers: %d (Old: %d) | Active threads: %s\n\n", keypath.MainPid, keypath.PumaStatePath, keypath.AppCurrentPhase, keypath.BootedWorkers, keypath.OldWorkers, asciiThreadLoad(keypath.TotalCurrentThreads, keypath.TotalMaxThreads))
+					fmt.Printf("\n-> %d (%s) Phase: %d | Workers: %d (Old: %d) | Active threads: %s\n", keypath.MainPid, keypath.PumaStatePath, keypath.AppCurrentPhase, keypath.BootedWorkers, keypath.OldWorkers, asciiThreadLoad(keypath.TotalCurrentThreads, keypath.TotalMaxThreads))
 				} else {
-					fmt.Printf("\n-> %d (%s) Phase: %d | Workers: %d | Active threads: %s\n\n", keypath.MainPid, keypath.PumaStatePath, keypath.AppCurrentPhase, keypath.BootedWorkers, asciiThreadLoad(keypath.TotalCurrentThreads, keypath.TotalMaxThreads))
+					fmt.Printf("\n-> %d (%s) Phase: %d | Workers: %d | Active threads: %s\n", keypath.MainPid, keypath.PumaStatePath, keypath.AppCurrentPhase, keypath.BootedWorkers, asciiThreadLoad(keypath.TotalCurrentThreads, keypath.TotalMaxThreads))
 				}
 			}
 
@@ -75,7 +75,7 @@ func printStatusWorkers(ps []pumaStatusWorker, currentPhase int) error {
 				lcheckin = Brown(timeElapsed(key.LastCheckin))
 			}
 
-			fmt.Printf("* %d [%d] CPU Av: %s%% CPU Times: %s Mem: %sMiB Phase: %s Uptime: %s Threads: %s (Last checkin: %s)\n", key.ID, key.Pid, colorCPU(key.CPUPercent), timeElapsedFromSeconds(key.CPUTimes), colorMemory(key.Memory), phase, timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)), asciiThreadLoad(key.CurrentThreads, key.MaxThreads), lcheckin)
+			fmt.Printf("  └ %d CPU Av: %s%% CPU Times: %s Mem: %sMiB Phase: %s Uptime: %s Threads: %s (Last checkin: %s)\n", key.Pid, colorCPU(key.CPUPercent), timeElapsedFromSeconds(key.CPUTimes), colorMemory(key.Memory), phase, timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)), asciiThreadLoad(key.CurrentThreads, key.MaxThreads), lcheckin)
 			continue
 		}
 
