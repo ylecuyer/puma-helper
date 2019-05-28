@@ -75,7 +75,7 @@ func printStatusWorkers(ps []pumaStatusWorker, currentPhase int) error {
 				lcheckin = Brown(timeElapsed(key.LastCheckin))
 			}
 
-			fmt.Printf("  └ %d CPU Av: %s%% CPU Times: %s Mem: %sMiB Phase: %s Uptime: %s Threads: %s (Last checkin: %s)\n", key.Pid, colorCPU(key.CPUPercent), timeElapsedFromSeconds(key.CPUTimes), colorMemory(key.Memory), phase, timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)), asciiThreadLoad(key.CurrentThreads, key.MaxThreads), lcheckin)
+			fmt.Printf("  └ %d CPU Av: %s%% CPU Times: %s Mem: %sM Phase: %s Uptime: %s Threads: %s (Last checkin: %s)\n", key.Pid, colorCPU(key.CPUPercent), timeElapsedFromSeconds(key.CPUTimes), colorMemory(key.Memory), phase, timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)), asciiThreadLoad(key.CurrentThreads, key.MaxThreads), lcheckin)
 			continue
 		}
 
@@ -86,7 +86,7 @@ func printStatusWorkers(ps []pumaStatusWorker, currentPhase int) error {
 			continue
 		}
 
-		fmt.Printf("*  %s ~ PID %d\tWorker ID %d\tCPU Average: %s%%\tMem: %sMiB\tActive threads: %s\n", bootbtn, key.Pid, key.ID, colorCPU(key.CPUPercent), colorMemory(key.Memory), asciiThreadLoad(key.CurrentThreads, key.MaxThreads))
+		fmt.Printf("*  %s ~ PID %d\tWorker ID %d\tCPU Average: %s%%\tMem: %sM\tActive threads: %s\n", bootbtn, key.Pid, key.ID, colorCPU(key.CPUPercent), colorMemory(key.Memory), asciiThreadLoad(key.CurrentThreads, key.MaxThreads))
 		fmt.Printf("  Phase: %s\tLast checkin: %s\tTotal CPU times: %s\tUptime: %s\n", phase, timeElapsed(key.LastCheckin), timeElapsedFromSeconds(key.CPUTimes), timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)))
 	}
 	return nil
