@@ -35,11 +35,7 @@ func (ps pumaStatusFinalOutput) printStatusApps() {
 				fmt.Printf("  Booted workers: %d | PID: %d\n", keypath.BootedWorkers, keypath.MainPid)
 				fmt.Printf("  Current phase: %d | Old workers: %d | Load: %s\n\n", keypath.AppCurrentPhase, keypath.OldWorkers, asciiThreadLoad(keypath.TotalCurrentThreads, keypath.TotalMaxThreads))
 			} else {
-				if keypath.OldWorkers > 0 {
-					fmt.Printf("\n-> %d (%s) Phase: %d | Workers: %d (Old: %d) | Load: %s\n", keypath.MainPid, keypath.PumaStatePath, keypath.AppCurrentPhase, keypath.BootedWorkers, keypath.OldWorkers, asciiThreadLoad(keypath.TotalCurrentThreads, keypath.TotalMaxThreads))
-				} else {
-					fmt.Printf("\n-> %d (%s) Phase: %d | Workers: %d | Load: %s\n", keypath.MainPid, keypath.PumaStatePath, keypath.AppCurrentPhase, keypath.BootedWorkers, asciiThreadLoad(keypath.TotalCurrentThreads, keypath.TotalMaxThreads))
-				}
+				fmt.Printf("\n-> %d (%s) Phase: %d | Load: %s\n", keypath.MainPid, keypath.PumaStatePath, keypath.AppCurrentPhase, asciiThreadLoad(keypath.TotalCurrentThreads, keypath.TotalMaxThreads))
 			}
 
 			printStatusWorkers(keypath.Workers, keypath.AppCurrentPhase)
