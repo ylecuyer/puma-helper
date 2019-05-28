@@ -107,6 +107,10 @@ func retrieveStatusData() (*pumaStatusFinalOutput, error) {
 				workers = append(workers, worker)
 			}
 
+			sort.Slice(workers, func(i, j int) bool {
+				return workers[i].Uptime < workers[j].Uptime
+			})
+
 			pssp := pumaStatusStatePaths{
 				PumaStatePath:       pspath[fid],
 				BootedWorkers:       ps.BootedWorkers,
