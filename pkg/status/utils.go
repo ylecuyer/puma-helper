@@ -193,5 +193,5 @@ func colorMemory(memory float64) string {
 		mcritical = 1000
 	}
 
-	return colorState(memory, float64(mwarn), float64(mcritical), fmt.Sprintf("%.1f", memory))
+	return colorState(memory, float64(mwarn), float64(mcritical), fmt.Sprintf("%.0f", memory))
 }
