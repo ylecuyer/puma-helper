@@ -34,14 +34,23 @@ type pumaStatusApplication struct {
 }
 
 type pumaStatusStatePaths struct {
-	PumaStatePath       string             `json:"puma_state_path"`
-	BootedWorkers       int                `json:"booted_workers"`
-	AppCurrentPhase     int                `json:"app_current_phase"`
-	OldWorkers          int                `json:"old_workers"`
-	Workers             []pumaStatusWorker `json:"workers"`
-	TotalMaxThreads     int                `json:"total_max_threads"`
-	TotalCurrentThreads int                `json:"total_current_threads"`
-	MainPid             int                `json:"main_pid"`
+	PumaStatePath       string                  `json:"puma_state_path"`
+	BootedWorkers       int                     `json:"booted_workers"`
+	AppCurrentPhase     int                     `json:"app_current_phase"`
+	OldWorkers          int                     `json:"old_workers"`
+	Workers             []pumaStatusWorker      `json:"workers"`
+	TotalMaxThreads     int                     `json:"total_max_threads"`
+	TotalCurrentThreads int                     `json:"total_current_threads"`
+	MainPid             int                     `json:"main_pid"`
+	Padding             *pumaStatusStatePadding `json:"-"`
+}
+
+type pumaStatusStatePadding struct {
+	Pid      int
+	CPU      int
+	CPUTimes int
+	Memory   int
+	Uptime   int
 }
 
 type pumaStatusWorker struct {

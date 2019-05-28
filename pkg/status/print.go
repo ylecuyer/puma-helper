@@ -3,6 +3,7 @@ package status
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
@@ -32,13 +33,23 @@ func (ps pumaStatusFinalOutput) printStatusApps() {
 		for _, keypath := range key.PumaStatePaths {
 			if ExpandDetails {
 				fmt.Printf("\n  -> File: %s\n", keypath.PumaStatePath)
-				fmt.Printf("  Booted workers: %d | PID: %d\n", keypath.BootedWorkers, keypath.MainPid)
-				fmt.Printf("  Current phase: %d | Old workers: %d | Load: %s\n\n", keypath.AppCurrentPhase, keypath.OldWorkers, asciiThreadLoad(keypath.TotalCurrentThreads, keypath.TotalMaxThreads))
+
+				fmt.Printf("  Booted workers: %d | PID: %d\n", keypath.BootedWorkers,
+					keypath.MainPid)
+
+				fmt.Printf("  Current phase: %d | Old workers: %d | Load: %s\n\n",
+					keypath.AppCurrentPhase,
+					keypath.OldWorkers,
+					asciiThreadLoad(keypath.TotalCurrentThreads, keypath.TotalMaxThreads))
 			} else {
-				fmt.Printf("\n-> %d (%s) Phase: %d | Load: %s\n", keypath.MainPid, keypath.PumaStatePath, keypath.AppCurrentPhase, asciiThreadLoad(keypath.TotalCurrentThreads, keypath.TotalMaxThreads))
+				fmt.Printf("\n-> %d (%s) Phase: %d | Load: %s\n",
+					keypath.MainPid,
+					keypath.PumaStatePath,
+					keypath.AppCurrentPhase,
+					asciiThreadLoad(keypath.TotalCurrentThreads, keypath.TotalMaxThreads))
 			}
 
-			printStatusWorkers(keypath.Workers, keypath.AppCurrentPhase)
+			printStatusWorkers(keypath, keypath.AppCurrentPhase)
 		}
 
 		if line < len(ps.Application)-1 {
@@ -49,7 +60,17 @@ func (ps pumaStatusFinalOutput) printStatusApps() {
 }
 
 // printStatusWorkers print workers status context of one app
-func printStatusWorkers(ps []pumaStatusWorker, currentPhase int) {
+func printStatusWorkers(pstatuspath pumaStatusStatePaths, currentPhase int) {
+
+	ps := pstatuspath.Workers
+	pad := *pstatuspath.Padding
+
+	padcpu := strconv.Itoa(pad.CPU)
+	padcput := strconv.Itoa(pad.CPUTimes)
+	padmem := strconv.Itoa(pad.Memory)
+	paduptime := strconv.Itoa(pad.Uptime)
+	padpid := strconv.Itoa(pad.Pid)
+
 	for _, key := range ps {
 		phase := Green(fmt.Sprintf("%d", key.CurrentPhase))
 		if key.CurrentPhase != currentPhase {
@@ -59,7 +80,12 @@ func printStatusWorkers(ps []pumaStatusWorker, currentPhase int) {
 		te := timeElapsed(key.LastCheckin)
 
 		if !ExpandDetails {
-			fmt.Printf("  └ %d CPU Av: %s%% CPU Times: %s Mem: %sM Uptime: %s Load: %s", key.Pid, colorCPU(key.CPUPercent), timeElapsedFromSeconds(key.CPUTimes), colorMemory(key.Memory), timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)), asciiThreadLoad(key.CurrentThreads, key.MaxThreads))
+			fmt.Printf("  └ %"+padpid+"d CPU Av: %"+padcpu+"s%% CPU Times: %"+padcput+"s Mem: %"+padmem+"sM Uptime: %"+paduptime+"s Load: %s",
+				key.Pid, colorCPU(key.CPUPercent),
+				timeElapsedFromSeconds(key.CPUTimes),
+				colorMemory(key.Memory),
+				timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)),
+				asciiThreadLoad(key.CurrentThreads, key.MaxThreads))
 
 			if len(te) >= 3 || !strings.Contains(te, "s") {
 				fmt.Printf(" %s", Red("Last checkin: "+te))
@@ -79,8 +105,19 @@ func printStatusWorkers(ps []pumaStatusWorker, currentPhase int) {
 				continue
 			}
 
-			fmt.Printf("*  %s ~ PID %d\tWorker ID %d\tCPU Average: %s%%\tMem: %sM\tLoad: %s\n", bootbtn, key.Pid, key.ID, colorCPU(key.CPUPercent), colorMemory(key.Memory), asciiThreadLoad(key.CurrentThreads, key.MaxThreads))
-			fmt.Printf("  Phase: %s\tLast checkin: %s\tTotal CPU times: %s\tUptime: %s\n", phase, te, timeElapsedFromSeconds(key.CPUTimes), timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)))
+			fmt.Printf("*  %s ~ PID %"+padpid+"d\tWorker ID %d\tCPU Average: %"+padcpu+"s%%\tMem: %"+padmem+"sM\tLoad: %s\n",
+				bootbtn,
+				key.Pid,
+				key.ID,
+				colorCPU(key.CPUPercent),
+				colorMemory(key.Memory),
+				asciiThreadLoad(key.CurrentThreads, key.MaxThreads))
+
+			fmt.Printf("  Phase: %s\tLast checkin: %s\tTotal CPU times: %"+padcput+"s\tUptime: %"+paduptime+"s\n",
+				phase,
+				te,
+				timeElapsedFromSeconds(key.CPUTimes),
+				timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)))
 		}
 	}
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sort"
 	"strings"
+	"time"
 )
 
 // RunStatus run all status logical command
@@ -59,6 +60,7 @@ func retrieveStatusData() (*pumaStatusFinalOutput, error) {
 
 		for fid, ps := range pss {
 
+			psspadding := pumaStatusStatePadding{}
 			workers := []pumaStatusWorker{}
 			tmthreads := 0
 			tcthreads := 0
@@ -70,21 +72,42 @@ func retrieveStatusData() (*pumaStatusFinalOutput, error) {
 				if err != nil {
 					return nil, err
 				}
+				cpupadding := len(fmt.Sprintf("%.0f", cpu))
 
 				cput, err := getCPUTimesFromPID(pid)
 				if err != nil {
 					return nil, err
 				}
+				cputpading := len(timeElapsedFromSeconds(cput))
 
 				mem, err := getMemoryFromPID(pid)
 				if err != nil {
 					return nil, err
 				}
+				mempadding := len(fmt.Sprintf("%.0f", mem))
 
 				// Assuming this timestamp is in milliseconds
 				utime, err := getTotalUptimeFromPID(pid)
 				if err != nil {
 					return nil, err
+				}
+				utimepadding := len(timeElapsed(time.Unix(utime/1000, 0).Format(time.RFC3339)))
+
+				// Define padding used to print elements
+				if psspadding.CPU < cpupadding {
+					psspadding.CPU = cpupadding
+				}
+
+				if psspadding.CPUTimes < cputpading {
+					psspadding.CPUTimes = cputpading
+				}
+
+				if psspadding.Memory < mempadding {
+					psspadding.Memory = mempadding
+				}
+
+				if psspadding.Uptime < utimepadding {
+					psspadding.Uptime = utimepadding
 				}
 
 				worker := pumaStatusWorker{
@@ -119,6 +142,7 @@ func retrieveStatusData() (*pumaStatusFinalOutput, error) {
 				TotalMaxThreads:     tmthreads,
 				MainPid:             ps.MainPid,
 				AppCurrentPhase:     ps.Phase,
+				Padding:             &psspadding,
 			}
 
 			pssps = append(pssps, pssp)
