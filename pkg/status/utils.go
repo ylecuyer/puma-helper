@@ -134,7 +134,7 @@ func timeElapsed(nT string) string {
 
 	elapsed := time.Since(tx).String()
 	if strings.Contains(elapsed, "ms") {
-		return "~0s"
+		return "0s"
 	}
 
 	return fmt.Sprintf("%ss", strings.Split(elapsed, ".")[0])

@@ -3,6 +3,7 @@ package status
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 
 	version "github.com/dimelo/puma-helper/pkg/version"
@@ -59,25 +60,28 @@ func printStatusWorkers(ps []pumaStatusWorker, currentPhase int) {
 			phase = Red(fmt.Sprintf("%d", key.CurrentPhase))
 		}
 
-		if !ExpandDetails {
-			lcheckin := Green(timeElapsed(key.LastCheckin))
-			if len(timeElapsed(key.LastCheckin)) >= 3 {
-				lcheckin = Brown(timeElapsed(key.LastCheckin))
-			}
+		te := timeElapsed(key.LastCheckin)
 
-			fmt.Printf("  └ %d CPU Av: %s%% CPU Times: %s Mem: %sM Phase: %s Uptime: %s Threads: %s (Last checkin: %s)\n", key.Pid, colorCPU(key.CPUPercent), timeElapsedFromSeconds(key.CPUTimes), colorMemory(key.Memory), phase, timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)), asciiThreadLoad(key.CurrentThreads, key.MaxThreads), lcheckin)
+		if !ExpandDetails {
+			fmt.Printf("  └ %d CPU Av: %s%% CPU Times: %s Mem: %sM Phase: %s Uptime: %s Threads: %s", key.Pid, colorCPU(key.CPUPercent), timeElapsedFromSeconds(key.CPUTimes), colorMemory(key.Memory), phase, timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)), asciiThreadLoad(key.CurrentThreads, key.MaxThreads))
+
+			if len(te) >= 3 || !strings.Contains(te, "s") {
+				fmt.Printf(" %s", Brown("Last checkin: "+te))
+			}
+			fmt.Println()
+
 			continue
 		}
 
 		bootbtn := BgGreen(Bold("[UP]"))
 		if !key.IsBooted {
 			bootbtn = BgRed(Bold("[DOWN]"))
-			fmt.Printf("*  %s ~ PID %d\tWorker ID %d\tLast checkin: %s\n", bootbtn, key.Pid, key.ID, timeElapsed(key.LastCheckin))
+			fmt.Printf("*  %s ~ PID %d\tWorker ID %d\tLast checkin: %s\n", bootbtn, key.Pid, key.ID, te)
 			continue
 		}
 
 		fmt.Printf("*  %s ~ PID %d\tWorker ID %d\tCPU Average: %s%%\tMem: %sM\tActive threads: %s\n", bootbtn, key.Pid, key.ID, colorCPU(key.CPUPercent), colorMemory(key.Memory), asciiThreadLoad(key.CurrentThreads, key.MaxThreads))
-		fmt.Printf("  Phase: %s\tLast checkin: %s\tTotal CPU times: %s\tUptime: %s\n", phase, timeElapsed(key.LastCheckin), timeElapsedFromSeconds(key.CPUTimes), timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)))
+		fmt.Printf("  Phase: %s\tLast checkin: %s\tTotal CPU times: %s\tUptime: %s\n", phase, te, timeElapsedFromSeconds(key.CPUTimes), timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)))
 	}
 }
 
