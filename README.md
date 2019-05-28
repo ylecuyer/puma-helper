@@ -91,6 +91,10 @@ puma-helper status
 * `json`: Return JSON object who contains all informations
 * `details`: Show more details about apps and workers
 
+## Release the CLI
+
+Checkout [RELEASE.md](RELEASE.md)
+
 ## Report a bug
 
 Directly open an issue and follow given steps.
