@@ -23,14 +23,13 @@ func (ps pumaStatusFinalOutput) printStatusApps() {
 	for _, key := range ps.Application {
 		currentApp = key.Name
 
-		basetitle := fmt.Sprintf("-> %s application", currentApp)
 		if ExpandDetails {
-			fmt.Printf(basetitle + " | App root: " + key.RootPath)
-		}
-		if len(key.Description) == 0 {
-			fmt.Printf(basetitle)
+			fmt.Printf("-> %s application | App root: %s", currentApp, key.RootPath)
 		} else {
-			fmt.Printf(basetitle + " | About: " + key.Description)
+			fmt.Printf("%s application", currentApp)
+		}
+		if len(key.Description) > 0 {
+			fmt.Printf(" | About: %s", key.Description)
 		}
 
 		for _, keypath := range key.PumaStatePaths {
@@ -45,7 +44,7 @@ func (ps pumaStatusFinalOutput) printStatusApps() {
 					keypath.OldWorkers,
 					asciiThreadLoad(keypath.TotalCurrentThreads, keypath.TotalMaxThreads))
 			} else {
-				fmt.Printf("\n  %d (%s) | Load: %s\n",
+				fmt.Printf("\n%d (%s) | Load: %s\n",
 					keypath.MainPid,
 					keypath.PumaStatePath,
 					asciiThreadLoad(keypath.TotalCurrentThreads, keypath.TotalMaxThreads))
@@ -81,24 +80,7 @@ func printStatusWorkers(pstatuspath pumaStatusStatePaths, currentPhase int) {
 
 		te := timeElapsed(key.LastCheckin)
 
-		if !ExpandDetails {
-			fmt.Printf("└ %"+padpid+"d %"+padcpu+"s%% %"+padmem+"sM Uptime: %"+paduptime+"s Load: %s",
-				key.Pid, colorCPU(key.CPUPercent),
-				colorMemory(key.Memory),
-				timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)),
-				asciiThreadLoad(key.CurrentThreads, key.MaxThreads))
-
-			if len(te) >= 3 || !strings.Contains(te, "s") {
-				fmt.Printf(" %s", Red("Last checkin: "+te))
-			}
-
-			if key.CurrentPhase != currentPhase {
-				fmt.Printf(" %s", Red("Phase: "+string(key.CurrentPhase)))
-			}
-
-			fmt.Println()
-
-		} else {
+		if ExpandDetails {
 			bootbtn := BgGreen(Bold("[UP]"))
 			if !key.IsBooted {
 				bootbtn = BgRed(Bold("[DOWN]"))
@@ -119,6 +101,22 @@ func printStatusWorkers(pstatuspath pumaStatusStatePaths, currentPhase int) {
 				te,
 				timeElapsedFromSeconds(key.CPUTimes),
 				timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)))
+		} else {
+			fmt.Printf(" └ %"+padpid+"d %"+padcpu+"s%% %"+padmem+"sM Uptime: %"+paduptime+"s Load: %s",
+				key.Pid, colorCPU(key.CPUPercent),
+				colorMemory(key.Memory),
+				timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)),
+				asciiThreadLoad(key.CurrentThreads, key.MaxThreads))
+
+			if len(te) >= 3 || !strings.Contains(te, "s") {
+				fmt.Printf(" %s", Red("Last checkin: "+te))
+			}
+
+			if key.CurrentPhase != currentPhase {
+				fmt.Printf(" %s", Red("Phase: "+string(key.CurrentPhase)))
+			}
+
+			fmt.Println()
 		}
 	}
 }
