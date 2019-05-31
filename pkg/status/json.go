@@ -65,4 +65,5 @@ type pumaStatusWorker struct {
 	CurrentPhase   int     `json:"current_phase"`
 	Uptime         int64   `json:"uptime"`
 	CPUTimes       int     `json:"cpu_times"`
+	Backlog        int     `json:"backlog"`
 }

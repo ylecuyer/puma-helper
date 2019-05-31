@@ -88,13 +88,14 @@ func printStatusWorkers(pstatuspath pumaStatusStatePaths, currentPhase int) {
 				continue
 			}
 
-			fmt.Printf("*  %s ~ PID %"+padpid+"d\tWorker ID %d\tCPU Average: %"+padcpu+"s%%\tMem: %"+padmem+"sM\tLoad: %s\n",
+			fmt.Printf("*  %s ~ PID %"+padpid+"d\tWorker ID %d\tCPU Average: %"+padcpu+"s%%\tMem: %"+padmem+"sM\tLoad: %s Queue: %d\n",
 				bootbtn,
 				key.Pid,
 				key.ID,
 				colorCPU(key.CPUPercent),
 				colorMemory(key.Memory),
-				asciiThreadLoad(key.CurrentThreads, key.MaxThreads))
+				asciiThreadLoad(key.CurrentThreads, key.MaxThreads),
+				key.Backlog)
 
 			fmt.Printf("  Phase: %s\tLast checkin: %s\tTotal CPU times: %"+padcput+"s\tUptime: %"+paduptime+"s\n",
 				phase,
@@ -102,11 +103,12 @@ func printStatusWorkers(pstatuspath pumaStatusStatePaths, currentPhase int) {
 				timeElapsedFromSeconds(key.CPUTimes),
 				timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)))
 		} else {
-			fmt.Printf(" └ %"+padpid+"d %"+padcpu+"s%% %"+padmem+"sM Uptime: %"+paduptime+"s Load: %s",
+			fmt.Printf(" └ %"+padpid+"d CPU Av: %"+padcpu+"s Mem: %"+padmem+"s Uptime: %"+paduptime+"s Load: %s Queue: %d",
 				key.Pid, colorCPU(key.CPUPercent),
 				colorMemory(key.Memory),
 				timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)),
-				asciiThreadLoad(key.CurrentThreads, key.MaxThreads))
+				asciiThreadLoad(key.CurrentThreads, key.MaxThreads),
+				key.Backlog)
 
 			if len(te) >= 3 || !strings.Contains(te, "s") {
 				fmt.Printf(" %s", Red("Last checkin: "+te))

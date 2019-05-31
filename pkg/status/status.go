@@ -122,6 +122,7 @@ func retrieveStatusData() (*pumaStatusFinalOutput, error) {
 					CurrentPhase:   v.Phase,
 					Uptime:         utime / 1000,
 					CPUTimes:       cput,
+					Backlog:        v.LastStatus.Backlog,
 				}
 
 				tcthreads += (v.LastStatus.MaxThreads - v.LastStatus.PoolCapacity)
