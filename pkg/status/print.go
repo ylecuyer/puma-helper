@@ -23,7 +23,10 @@ func (ps pumaStatusFinalOutput) printStatusApps() {
 	for _, key := range ps.Application {
 		currentApp = key.Name
 
-		basetitle := fmt.Sprintf("-> %s application | App root: %s", currentApp, key.RootPath)
+		basetitle := fmt.Sprintf("-> %s application", currentApp)
+		if ExpandDetails {
+			fmt.Printf(basetitle + " | App root: " + key.RootPath)
+		}
 		if len(key.Description) == 0 {
 			fmt.Printf(basetitle)
 		} else {
@@ -42,10 +45,9 @@ func (ps pumaStatusFinalOutput) printStatusApps() {
 					keypath.OldWorkers,
 					asciiThreadLoad(keypath.TotalCurrentThreads, keypath.TotalMaxThreads))
 			} else {
-				fmt.Printf("\n-> %d (%s) Phase: %d | Load: %s\n",
+				fmt.Printf("\n  %d (%s) | Load: %s\n",
 					keypath.MainPid,
 					keypath.PumaStatePath,
-					keypath.AppCurrentPhase,
 					asciiThreadLoad(keypath.TotalCurrentThreads, keypath.TotalMaxThreads))
 			}
 
@@ -80,9 +82,8 @@ func printStatusWorkers(pstatuspath pumaStatusStatePaths, currentPhase int) {
 		te := timeElapsed(key.LastCheckin)
 
 		if !ExpandDetails {
-			fmt.Printf("  └ %"+padpid+"d CPU Av: %"+padcpu+"s%% CPU Times: %"+padcput+"s Mem: %"+padmem+"sM Uptime: %"+paduptime+"s Load: %s",
+			fmt.Printf("└ %"+padpid+"d %"+padcpu+"s%% %"+padmem+"sM Uptime: %"+paduptime+"s Load: %s",
 				key.Pid, colorCPU(key.CPUPercent),
-				timeElapsedFromSeconds(key.CPUTimes),
 				colorMemory(key.Memory),
 				timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)),
 				asciiThreadLoad(key.CurrentThreads, key.MaxThreads))
