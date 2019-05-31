@@ -103,12 +103,15 @@ func printStatusWorkers(pstatuspath pumaStatusStatePaths, currentPhase int) {
 				timeElapsedFromSeconds(key.CPUTimes),
 				timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)))
 		} else {
-			fmt.Printf(" └ %"+padpid+"d CPU Av: %"+padcpu+"s Mem: %"+padmem+"s Uptime: %"+paduptime+"s Load: %s Queue: %d",
+			fmt.Printf(" └ %"+padpid+"d CPU: %"+padcpu+"s Mem: %"+padmem+"s Uptime: %"+paduptime+"s Load: %s",
 				key.Pid, colorCPU(key.CPUPercent),
 				colorMemory(key.Memory),
 				timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)),
-				asciiThreadLoad(key.CurrentThreads, key.MaxThreads),
-				key.Backlog)
+				asciiThreadLoad(key.CurrentThreads, key.MaxThreads))
+
+			if key.Backlog > 0 {
+				fmt.Printf("Queue: %s", BgBrown(Bold(string(key.Backlog))))
+			}
 
 			if len(te) >= 3 || !strings.Contains(te, "s") {
 				fmt.Printf(" %s", Red("Last checkin: "+te))
