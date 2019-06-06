@@ -192,7 +192,7 @@ func colorMemory(memory float64) string {
 }
 
 func elapsedFormatted(from, to time.Time) string {
-	_, years, months, days, hours, minutes, seconds, _ := elapsed(from, to)
+	years, months, days, hours, minutes, seconds, _ := elapsed(from, to)
 
 	estr := ""
 
@@ -213,15 +213,9 @@ func elapsedFormatted(from, to time.Time) string {
 	return estr
 }
 
-func elapsed(from, to time.Time) (inverted bool, years, months, days, hours, minutes, seconds, nanoseconds int) {
+func elapsed(from, to time.Time) (years, months, days, hours, minutes, seconds, nanoseconds int) {
 	if from.Location() != to.Location() {
 		to = to.In(to.Location())
-	}
-
-	inverted = false
-	if from.After(to) {
-		inverted = true
-		from, to = to, from
 	}
 
 	y1, M1, d1 := from.Date()
