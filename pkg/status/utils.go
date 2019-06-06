@@ -6,12 +6,12 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
-	"strconv"
 	"strings"
 	"time"
 
 	. "github.com/logrusorgru/aurora"
 	proc "github.com/shirou/gopsutil/process"
+	pidu "github.com/struCoder/pidusage"
 	yaml "gopkg.in/yaml.v2"
 )
 
@@ -72,14 +72,11 @@ func readPumaStats(paths []string) ([]pumaStatus, error) {
 		pspaths = append(pspaths, ps)
 	}
 
-	//body, _ := exec.Command("cat", "/go/src/github.com/dimelo/puma-helper/output.txt").Output()
-	//fmt.Println(pspath)
-
 	return pspaths, nil
 }
 
-func getTotalUptimeFromPID(pid int32) (int64, error) {
-	p, err := proc.NewProcess(pid)
+func getTotalUptimeFromPID(pid int) (int64, error) {
+	p, err := proc.NewProcess(int32(pid))
 	if err != nil {
 		return 0, err
 	}
@@ -90,40 +87,16 @@ func getTotalUptimeFromPID(pid int32) (int64, error) {
 	return t, nil
 }
 
-func getCPUPercentFromPID(pid int32) (float64, error) {
-	p, err := proc.NewProcess(pid)
+func getCPUPercentMemoryFromPID(pid int) (float64, float64, error) {
+	// First run to init history
+	_, err := pidu.GetStat(int(pid))
 	if err != nil {
-		return 0.0, err
+		return 0, 0, nil
 	}
-	cpu, err := p.CPUPercent()
-	if err != nil {
-		return 0.0, err
-	}
-	return cpu, nil
-}
-
-func getCPUTimesFromPID(pid int32) (int, error) {
-	p, err := proc.NewProcess(pid)
-	if err != nil {
-		return 0.0, err
-	}
-	t, err := p.Times()
-	if err != nil {
-		return 0.0, err
-	}
-	return strconv.Atoi(fmt.Sprintf("%.0f", t.Total()-(t.Idle+t.Iowait)))
-}
-
-func getMemoryFromPID(pid int32) (float64, error) {
-	p, err := proc.NewProcess(pid)
-	if err != nil {
-		return 0.0, err
-	}
-	mem, err := p.MemoryInfoEx()
-	if err != nil {
-		return 0.0, err
-	}
-	return float64(mem.RSS+mem.Shared) / float64(1024*1024), nil
+	// Default value of CLK_TCK on Linux
+	time.Sleep(10 * time.Millisecond)
+	pidst, err := pidu.GetStat(int(pid))
+	return pidst.CPU, pidst.Memory / float64(1024*1024), err
 }
 
 func timeElapsed(nT string) string {

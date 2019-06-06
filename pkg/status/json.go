@@ -46,11 +46,10 @@ type pumaStatusStatePaths struct {
 }
 
 type pumaStatusStatePadding struct {
-	Pid      int
-	CPU      int
-	CPUTimes int
-	Memory   int
-	Uptime   int
+	Pid    int
+	CPU    int
+	Memory int
+	Uptime int
 }
 
 type pumaStatusWorker struct {
@@ -64,6 +63,5 @@ type pumaStatusWorker struct {
 	Memory         float64 `json:"memory"`
 	CurrentPhase   int     `json:"current_phase"`
 	Uptime         int64   `json:"uptime"`
-	CPUTimes       int     `json:"cpu_times"`
 	Backlog        int     `json:"backlog"`
 }

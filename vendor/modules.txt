@@ -1,8 +1,8 @@
-# github.com/StackExchange/wmi v0.0.0-20180116203802-5d049714c4a6
+# github.com/StackExchange/wmi v0.0.0-20190523213315-cbe66965904d
 github.com/StackExchange/wmi
 # github.com/fsnotify/fsnotify v1.4.7
 github.com/fsnotify/fsnotify
-# github.com/go-ole/go-ole v1.2.1
+# github.com/go-ole/go-ole v1.2.4
 github.com/go-ole/go-ole
 github.com/go-ole/go-ole/oleutil
 # github.com/hashicorp/hcl v1.0.0
@@ -28,7 +28,7 @@ github.com/magiconair/properties
 github.com/mitchellh/mapstructure
 # github.com/pelletier/go-toml v1.2.0
 github.com/pelletier/go-toml
-# github.com/shirou/gopsutil v2.18.10+incompatible
+# github.com/shirou/gopsutil v2.18.12+incompatible
 github.com/shirou/gopsutil/process
 github.com/shirou/gopsutil/cpu
 github.com/shirou/gopsutil/host
@@ -52,6 +52,8 @@ github.com/spf13/jwalterweatherman
 github.com/spf13/pflag
 # github.com/spf13/viper v1.2.1
 github.com/spf13/viper
+# github.com/struCoder/pidusage v0.1.2
+github.com/struCoder/pidusage
 # github.com/tcnksm/go-input v0.0.0-20180404061846-548a7d7a8ee8
 github.com/tcnksm/go-input
 # golang.org/x/crypto v0.0.0-20181112202954-3d3f9f413869

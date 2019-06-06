@@ -67,7 +67,6 @@ func printStatusWorkers(pstatuspath pumaStatusStatePaths, currentPhase int) {
 	pad := *pstatuspath.Padding
 
 	padcpu := strconv.Itoa(pad.CPU)
-	padcput := strconv.Itoa(pad.CPUTimes)
 	padmem := strconv.Itoa(pad.Memory)
 	paduptime := strconv.Itoa(pad.Uptime)
 	padpid := strconv.Itoa(pad.Pid)
@@ -97,10 +96,9 @@ func printStatusWorkers(pstatuspath pumaStatusStatePaths, currentPhase int) {
 				asciiThreadLoad(key.CurrentThreads, key.MaxThreads),
 				key.Backlog)
 
-			fmt.Printf("  Phase: %s\tLast checkin: %s\tTotal CPU times: %"+padcput+"s\tUptime: %"+paduptime+"s\n",
+			fmt.Printf("  Phase: %s\tLast checkin: %s\tUptime: %"+paduptime+"s\n",
 				phase,
 				te,
-				timeElapsedFromSeconds(key.CPUTimes),
 				timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)))
 
 		} else {

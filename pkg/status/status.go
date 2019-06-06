@@ -66,24 +66,13 @@ func retrieveStatusData() (*pumaStatusFinalOutput, error) {
 			tcthreads := 0
 
 			for _, v := range ps.WorkerStatus {
-				pid := int32(v.Pid)
+				pid := v.Pid
 
-				cpu, err := getCPUPercentFromPID(pid)
+				cpu, mem, err := getCPUPercentMemoryFromPID(pid)
 				if err != nil {
 					return nil, err
 				}
-				cpupadding := len(fmt.Sprintf("%.0f", cpu))
-
-				cput, err := getCPUTimesFromPID(pid)
-				if err != nil {
-					return nil, err
-				}
-				cputpading := len(timeElapsedFromSeconds(cput))
-
-				mem, err := getMemoryFromPID(pid)
-				if err != nil {
-					return nil, err
-				}
+				cpupadding := len(fmt.Sprintf("%.1f", cpu))
 				mempadding := len(fmt.Sprintf("%.0f", mem))
 
 				// Assuming this timestamp is in milliseconds
@@ -96,10 +85,6 @@ func retrieveStatusData() (*pumaStatusFinalOutput, error) {
 				// Define padding used to print elements
 				if psspadding.CPU < cpupadding {
 					psspadding.CPU = cpupadding
-				}
-
-				if psspadding.CPUTimes < cputpading {
-					psspadding.CPUTimes = cputpading
 				}
 
 				if psspadding.Memory < mempadding {
@@ -121,7 +106,6 @@ func retrieveStatusData() (*pumaStatusFinalOutput, error) {
 					Memory:         mem,
 					CurrentPhase:   v.Phase,
 					Uptime:         utime / 1000,
-					CPUTimes:       cput,
 					Backlog:        v.LastStatus.Backlog,
 				}
 
