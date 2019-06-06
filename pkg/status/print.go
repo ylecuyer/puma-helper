@@ -73,17 +73,17 @@ func printStatusWorkers(pstatuspath pumaStatusStatePaths, currentPhase int) {
 	padpid := strconv.Itoa(pad.Pid)
 
 	for _, key := range ps {
-		phase := Green(fmt.Sprintf("%d", key.CurrentPhase))
+		phase := Green(fmt.Sprintf("%d", key.CurrentPhase)).String()
 		if key.CurrentPhase != currentPhase {
-			phase = Red(fmt.Sprintf("%d", key.CurrentPhase))
+			phase = Red(fmt.Sprintf("%d", key.CurrentPhase)).String()
 		}
 
 		te := timeElapsed(key.LastCheckin)
 
 		if ExpandDetails {
-			bootbtn := BgGreen(Bold("[UP]"))
+			bootbtn := BgGreen(Bold("[UP]")).String()
 			if !key.IsBooted {
-				bootbtn = BgRed(Bold("[DOWN]"))
+				bootbtn = BgRed(Bold("[DOWN]")).String()
 				fmt.Printf("*  %s ~ PID %d\tWorker ID %d\tLast checkin: %s\n", bootbtn, key.Pid, key.ID, te)
 				continue
 			}
@@ -102,7 +102,9 @@ func printStatusWorkers(pstatuspath pumaStatusStatePaths, currentPhase int) {
 				te,
 				timeElapsedFromSeconds(key.CPUTimes),
 				timeElapsed(time.Unix(key.Uptime, 0).Format(time.RFC3339)))
+
 		} else {
+
 			fmt.Printf(" └ %"+padpid+"d CPU: %"+padcpu+"s Mem: %"+padmem+"s Uptime: %"+paduptime+"s Load: %s",
 				key.Pid, colorCPU(key.CPUPercent),
 				colorMemory(key.Memory),
@@ -110,15 +112,15 @@ func printStatusWorkers(pstatuspath pumaStatusStatePaths, currentPhase int) {
 				asciiThreadLoad(key.CurrentThreads, key.MaxThreads))
 
 			if key.Backlog > 0 {
-				fmt.Printf("Queue: %s", BgBrown(Bold(string(key.Backlog))))
+				fmt.Printf(" %s", Red("Queue: "+string(key.Backlog)).String())
 			}
 
 			if len(te) >= 3 || !strings.Contains(te, "s") {
-				fmt.Printf(" %s", Red("Last checkin: "+te))
+				fmt.Printf(" %s", Red("Last checkin: "+te).String())
 			}
 
 			if key.CurrentPhase != currentPhase {
-				fmt.Printf(" %s", Red("Phase: "+string(key.CurrentPhase)))
+				fmt.Printf(" %s", Red("Phase: "+string(key.CurrentPhase)).String())
 			}
 
 			fmt.Println()
